@@ -1,0 +1,655 @@
+{
+  "settings": {
+    "siteName": "J M Pabari & Associates",
+    "tagline": "Chartered Accountants",
+    "phone": "+91 265 235 1234",
+    "email": "info@jmpabari.com",
+    "address": "3rd Floor, Pancham Icon, Vasna, Vadodara – 390007, Gujarat, India",
+    "logo": "/assets/img/jm-logo.png",
+    "footerLogo": "/assets/img/footer-logo.png",
+    "primaryColor": "#123c69",
+    "accentColor": "#f2b84b",
+    "linkedin": "#",
+    "facebook": "#",
+    "instagram": "#",
+    "footerText": "35+ Years of Trust. Excellence. Integrity. Commitment.",
+    "adminNote": "Edit this content from Admin → Settings.",
+    "formServices": [
+      "Accounting / Bookkeeping",
+      "GST Compliance",
+      "Income Tax",
+      "Audit & Assurance",
+      "Business Advisory",
+      "Other"
+    ],
+    "formHeading": "Send an Enquiry",
+    "formSuccessMessage": "Thank you. Your enquiry has been submitted.",
+    "enquiryRetentionDays": 365
+  },
+  "menus": {
+    "header": [
+      {
+        "label": "Home",
+        "url": "/"
+      },
+      {
+        "label": "About Us",
+        "url": "/about"
+      },
+      {
+        "label": "Our Services",
+        "url": "/our-services",
+        "children": [
+          {
+            "label": "Audit & Assurance",
+            "url": "/our-services#audit-assurance"
+          },
+          {
+            "label": "Income Tax Services",
+            "url": "/our-services#income-tax"
+          },
+          {
+            "label": "GST & Indirect Tax Advisory",
+            "url": "/our-services#gst-indirect-tax"
+          },
+          {
+            "label": "Corporate Compliance",
+            "url": "/our-services#corporate-compliance"
+          },
+          {
+            "label": "Financial Advisory",
+            "url": "/our-services#financial-advisory"
+          },
+          {
+            "label": "Consulting Coordination",
+            "url": "/our-services#consulting-coordination"
+          }
+        ]
+      },
+      {
+        "label": "Other Services",
+        "url": "/other-services",
+        "children": [
+          {
+            "label": "Accounting & Bookkeeping",
+            "url": "/other-services#accounting-bookkeeping"
+          },
+          {
+            "label": "GST Compliance",
+            "url": "/other-services#gst-compliance"
+          },
+          {
+            "label": "Income Tax Consultancy",
+            "url": "/other-services#income-tax-consultancy"
+          },
+          {
+            "label": "Payroll & MIS",
+            "url": "/other-services#payroll-mis"
+          },
+          {
+            "label": "Business Setup & Support",
+            "url": "/other-services#business-setup-support"
+          },
+          {
+            "label": "Virtual CFO / Reporting",
+            "url": "/other-services#virtual-cfo-reporting"
+          },
+          {
+            "label": "Business Advisory",
+            "url": "/other-services#business-advisory"
+          }
+        ]
+      },
+      {
+        "label": "Resources",
+        "url": "/resources"
+      },
+      {
+        "label": "Careers",
+        "url": "/careers"
+      },
+      {
+        "label": "Contact Us",
+        "url": "/contact"
+      }
+    ],
+    "footer": [
+      {
+        "label": "Home",
+        "url": "/"
+      },
+      {
+        "label": "About Us",
+        "url": "/about"
+      },
+      {
+        "label": "Our Services",
+        "url": "/our-services"
+      },
+      {
+        "label": "Other Services",
+        "url": "/other-services"
+      },
+      {
+        "label": "Resources",
+        "url": "/resources"
+      },
+      {
+        "label": "Contact Us",
+        "url": "/contact"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "id": 1,
+      "slug": "home",
+      "title": "Home",
+      "seoTitle": "Home | J M Pabari & Associates",
+      "metaDescription": "A modern accounting, tax and advisory practice built on 35+ years of trust, practical thinking and long-term client relationships.",
+      "status": "published",
+      "template": "home",
+      "order": 1,
+      "heroKicker": "Chartered Accountants",
+      "heroTitle": "Reliable financial clarity for growing businesses.",
+      "heroText": "A modern accounting, tax and advisory practice built on 35+ years of trust, practical thinking and long-term client relationships.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "stats",
+          "items": [
+            {
+              "value": "35+",
+              "label": "Years of professional excellence"
+            },
+            {
+              "value": "360°",
+              "label": "Tax, audit and advisory support"
+            },
+            {
+              "value": "SME",
+              "label": "Focused business guidance"
+            },
+            {
+              "value": "CA",
+              "label": "Ethics-led chartered practice"
+            }
+          ]
+        },
+        {
+          "type": "split",
+          "kicker": "About The Firm",
+          "title": "Trusted advice that feels clear, structured and actionable.",
+          "text": "J M Pabari & Associates supports businesses, professionals and organizations with compliance, assurance, taxation and advisory services. The approach is simple: understand the client first, then provide practical solutions that fit their stage of growth.",
+          "buttonText": "Know More",
+          "buttonUrl": "/about",
+          "cards": [
+            {
+              "title": "Clarity",
+              "text": "No confusing jargon. Just clear numbers and next steps."
+            },
+            {
+              "title": "Growth View",
+              "text": "Advice that supports both compliance and expansion."
+            },
+            {
+              "title": "Integrity",
+              "text": "Ethical, disciplined and professional processes."
+            },
+            {
+              "title": "Continuity",
+              "text": "Long-term support through every business stage."
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "kicker": "Our Capabilities",
+          "title": "Professional support across core business needs.",
+          "items": [
+            {
+              "title": "Audit & Assurance",
+              "text": "Independent, structured audit support designed to bring confidence to stakeholders.",
+              "url": "/our-services"
+            },
+            {
+              "title": "Taxation",
+              "text": "Income tax planning, filing, representation and compliance for individuals and entities.",
+              "url": "/our-services"
+            },
+            {
+              "title": "CoreTax Consultancy",
+              "text": "Accounting, GST, payroll, business setup and advisory through the associated consultancy entity.",
+              "url": "/other-services"
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Need clarity on your accounts, tax or compliance?",
+          "text": "Share your requirement and the team will guide you with the right next step.",
+          "buttonText": "Enquire Now →",
+          "buttonUrl": "/contact"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "slug": "about",
+      "title": "About Us",
+      "seoTitle": "About Us | J M Pabari & Associates",
+      "metaDescription": "We combine practical experience, compliance discipline and business-focused advisory to support growing clients.",
+      "status": "published",
+      "template": "default",
+      "order": 2,
+      "heroKicker": "About The Firm",
+      "heroTitle": "A professional accounting practice built on trust and long-term relationships.",
+      "heroText": "We combine practical experience, compliance discipline and business-focused advisory to support growing clients.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Our Story",
+          "title": "35+ years of professional excellence.",
+          "text": "J M Pabari & Associates is built around clarity, ethics and client-first professional support. The firm works with businesses, professionals and organizations across taxation, audit, assurance and advisory needs."
+        },
+        {
+          "type": "cards",
+          "kicker": "How We Work",
+          "title": "A structured approach for every client.",
+          "items": [
+            {
+              "title": "Understand",
+              "text": "We first understand the client, business model, documents and compliance position."
+            },
+            {
+              "title": "Plan",
+              "text": "We create a practical roadmap for accounts, taxes, audit and advisory support."
+            },
+            {
+              "title": "Execute",
+              "text": "We coordinate filings, documentation, review and reporting with consistent follow-through."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Looking for a dependable CA partner?",
+          "text": "Connect with the team for a clear discussion around your requirement.",
+          "buttonText": "Contact Us →",
+          "buttonUrl": "/contact"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "slug": "our-services",
+      "title": "Our Services",
+      "seoTitle": "Our Services | J M Pabari & Associates",
+      "metaDescription": "From audit and taxation to corporate compliance and financial advisory, the firm offers structured support for routine and strategic requirements.",
+      "status": "published",
+      "template": "default",
+      "order": 3,
+      "heroKicker": "Professional Services",
+      "heroTitle": "Comprehensive CA services for individuals, firms and companies.",
+      "heroText": "From audit and taxation to corporate compliance and financial advisory, the firm offers structured support for routine and strategic requirements.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "cards",
+          "kicker": "Core Services",
+          "title": "What we help with",
+          "items": [
+            {
+              "id": "audit-assurance",
+              "title": "Audit & Assurance",
+              "text": "Statutory audit, internal audit, tax audit and assurance services with clear documentation and reporting."
+            },
+            {
+              "id": "income-tax",
+              "title": "Income Tax Services",
+              "text": "Income tax return filing, tax planning, notices, representation and compliance guidance."
+            },
+            {
+              "id": "gst-indirect-tax",
+              "title": "GST & Indirect Tax Advisory",
+              "text": "GST registration, return filing, reconciliation, advisory and compliance review."
+            },
+            {
+              "id": "corporate-compliance",
+              "title": "Corporate Compliance",
+              "text": "ROC, company law and compliance support for companies and business entities."
+            },
+            {
+              "id": "financial-advisory",
+              "title": "Financial Advisory",
+              "text": "Business financial review, reporting, projections and decision-support insights."
+            },
+            {
+              "id": "consulting-coordination",
+              "title": "Consulting Coordination",
+              "text": "Coordinated support for accounting, taxation and documentation requirements."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Need service-specific guidance?",
+          "text": "Share your requirement and our team will suggest the right way forward.",
+          "buttonText": "Start Discussion →",
+          "buttonUrl": "/contact"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "slug": "other-services",
+      "title": "Other Services",
+      "seoTitle": "Other Services | J M Pabari & Associates",
+      "metaDescription": "A focused services page for CoreTax Consultancy covering accounting, GST, income tax, payroll, reporting, setup and business advisory support.",
+      "status": "published",
+      "template": "service",
+      "order": 4,
+      "heroKicker": "CoreTax Consultancy",
+      "heroTitle": "Dedicated CoreTax services for accounting, tax and business support.",
+      "heroText": "A focused services page for CoreTax Consultancy covering accounting, GST, income tax, payroll, reporting, setup and business advisory support.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "brand",
+          "logo": "/assets/img/coretax-logo.png",
+          "title": "CoreTax Consultancy Services",
+          "text": "Professional execution support for day-to-day accounting, compliance and business administration needs."
+        },
+        {
+          "type": "cards",
+          "kicker": "Dedicated Services",
+          "title": "CoreTax service areas",
+          "items": [
+            {
+              "id": "accounting-bookkeeping",
+              "title": "Accounting & Bookkeeping",
+              "text": "Accurate books, reconciliations, ledger maintenance and monthly accounting support."
+            },
+            {
+              "id": "gst-compliance",
+              "title": "GST Compliance",
+              "text": "GST return filing, input credit checks, reconciliations and periodic compliance support."
+            },
+            {
+              "id": "income-tax-consultancy",
+              "title": "Income Tax Consultancy",
+              "text": "Return preparation, tax working, advance tax support and documentation coordination."
+            },
+            {
+              "id": "payroll-mis",
+              "title": "Payroll & MIS",
+              "text": "Salary processing, payroll records, MIS dashboards and routine reporting support."
+            },
+            {
+              "id": "business-setup-support",
+              "title": "Business Setup & Support",
+              "text": "Practical help for registrations, basic compliance setup and document preparation."
+            },
+            {
+              "id": "virtual-cfo-reporting",
+              "title": "Virtual CFO / Reporting",
+              "text": "Periodic financial review, MIS, cashflow overview and decision-support reporting."
+            },
+            {
+              "id": "business-advisory",
+              "title": "Business Advisory",
+              "text": "Support for business planning, compliance processes and operational financial clarity."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How CoreTax Works",
+          "title": "Simple, clear and managed execution.",
+          "items": [
+            {
+              "title": "1. Requirement Review",
+              "text": "Understand the exact accounting, GST, tax or reporting requirement."
+            },
+            {
+              "title": "2. Document Collection",
+              "text": "Create a document checklist and collect required data in a structured manner."
+            },
+            {
+              "title": "3. Execution & Review",
+              "text": "Complete the task, review output and share the final status with the client."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Need CoreTax support for your business?",
+          "text": "Book a consultation and share your current compliance or accounting requirement.",
+          "buttonText": "Talk to CoreTax →",
+          "buttonUrl": "/contact"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "slug": "resources",
+      "title": "Resources",
+      "seoTitle": "Resources | J M Pabari & Associates",
+      "metaDescription": "Use this section for blogs, updates, downloadable guides, FAQs and client education material.",
+      "status": "published",
+      "template": "default",
+      "order": 5,
+      "heroKicker": "Knowledge Centre",
+      "heroTitle": "Helpful resources for tax, compliance and financial clarity.",
+      "heroText": "Use this section for blogs, updates, downloadable guides, FAQs and client education material.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "cards",
+          "kicker": "Resources",
+          "title": "Useful updates and guides",
+          "items": [
+            {
+              "title": "Tax Calendar",
+              "text": "Add monthly due dates and compliance reminders for clients."
+            },
+            {
+              "title": "Client Checklists",
+              "text": "Upload document checklists for GST, income tax and accounting tasks."
+            },
+            {
+              "title": "Business Guides",
+              "text": "Publish practical guides around accounting, audit and advisory topics."
+            }
+          ]
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "slug": "careers",
+      "title": "Careers",
+      "seoTitle": "Careers | J M Pabari & Associates",
+      "metaDescription": "Join a team that values learning, discipline, practical exposure and client-focused execution.",
+      "status": "published",
+      "template": "default",
+      "order": 6,
+      "heroKicker": "Careers",
+      "heroTitle": "Build your career with a professional CA practice.",
+      "heroText": "Join a team that values learning, discipline, practical exposure and client-focused execution.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Work With Us",
+          "title": "Grow with meaningful professional exposure.",
+          "text": "This page can be used to add internship openings, article assistant opportunities, experienced hiring and application instructions."
+        },
+        {
+          "type": "cards",
+          "kicker": "Opportunities",
+          "title": "Current focus areas",
+          "items": [
+            {
+              "title": "Article Assistants",
+              "text": "Practical exposure across audit, taxation, accounting and compliance."
+            },
+            {
+              "title": "Accounts Executives",
+              "text": "Client accounting, documentation and reporting support."
+            },
+            {
+              "title": "Tax Associates",
+              "text": "Income tax, GST and compliance execution support."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Interested in joining?",
+          "text": "Send your resume and area of interest to our team.",
+          "buttonText": "Apply Now →",
+          "buttonUrl": "/contact"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 7,
+      "slug": "contact",
+      "title": "Contact Us",
+      "seoTitle": "Contact Us | J M Pabari & Associates",
+      "metaDescription": "Share your details and the team will get back to you with the next steps.",
+      "status": "published",
+      "template": "contact",
+      "order": 7,
+      "heroKicker": "Contact Us",
+      "heroTitle": "Let’s discuss your accounting, tax or compliance requirement.",
+      "heroText": "Share your details and the team will get back to you with the next steps.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "contact"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "slug": "privacy-policy",
+      "title": "Privacy Policy",
+      "seoTitle": "Privacy Policy | J M Pabari & Associates",
+      "metaDescription": "This page explains how website enquiries and visitor information may be handled.",
+      "status": "published",
+      "template": "legal",
+      "order": 8,
+      "heroKicker": "Legal",
+      "heroTitle": "Privacy Policy",
+      "heroText": "This page explains how website enquiries and visitor information may be handled.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "title": "Privacy Policy",
+          "text": "This is a placeholder privacy policy. Replace this content with your final legal policy before publishing the website. Information submitted through forms may be used to respond to enquiries and provide services."
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "slug": "terms-conditions",
+      "title": "Terms & Conditions",
+      "seoTitle": "Terms & Conditions | J M Pabari & Associates",
+      "metaDescription": "This page outlines the general terms for using the website.",
+      "status": "published",
+      "template": "legal",
+      "order": 9,
+      "heroKicker": "Legal",
+      "heroTitle": "Terms & Conditions",
+      "heroText": "This page outlines the general terms for using the website.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "title": "Terms & Conditions",
+          "text": "This is placeholder terms content. Replace this with final reviewed terms before publishing the website. Website information is provided for general understanding and should not be treated as professional advice without consultation."
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "slug": "thank-you",
+      "title": "Thank You",
+      "seoTitle": "Thank You | J M Pabari & Associates",
+      "metaDescription": "Thank you for contacting us. Our team will review your message and get back to you shortly.",
+      "status": "published",
+      "template": "default",
+      "order": 10,
+      "heroKicker": "Thank You",
+      "heroTitle": "Your enquiry has been submitted.",
+      "heroText": "Thank you for contacting us. Our team will review your message and get back to you shortly.",
+      "heroImage": "",
+      "button1Text": "Book a Consultation →",
+      "button1Url": "/contact",
+      "button2Text": "Explore Services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "cta",
+          "title": "Continue exploring the site",
+          "text": "You can return to the homepage or view our services.",
+          "buttonText": "Back to Home →",
+          "buttonUrl": "/"
+        }
+      ],
+      "updatedAt": "2026-09-18T00:00:00.000Z"
+    }
+  ],
+  "enquiries": [],
+  "media": [],
+  "revisions": {}
+}

@@ -1,0 +1,22 @@
+{
+  "name": "jm-pabari-coretax-vercel-supabase-cms",
+  "version": "6.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "security:secret": "node scripts/generate-admin-secret.mjs",
+    "security:check": "node scripts/check-security-env.mjs",
+    "supabase:bootstrap-admin": "node scripts/bootstrap-supabase-admin.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "@supabase/supabase-js": "2.76.1"
+  }
+}
