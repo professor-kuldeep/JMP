@@ -1,5 +1,15 @@
-# JMP CoreTax CMS v6 — Clean Vercel + Supabase installation
+# JMP / CoreTax CMS
 
-See **FRESH-INSTALL-GUIDE.md** for fresh GitHub/Vercel/Supabase setup, first-time Super Admin bootstrap, and password recovery. This distribution preserves the JMP public website, CMS admin revamp, blog listing/editor and the v6 schema. It is not a database backup.
+Next.js 16 website and Supabase-backed CMS.
 
-Commands: `npm install`, `npm run build`, `npm run security:check`, `npm run supabase:bootstrap-admin` (one-time; read the guide).
+## Install and deploy
+1. Create a Vercel project connected to this repository.
+2. Configure the existing Supabase and CMS authentication environment variables. See `SUPABASE-SETUP.md` and `SECURITY-SETUP.md`.
+3. If deploying a **new** database, follow `SUPABASE-SETUP.md`. For an existing live database, **do not rerun bootstrap/migration scripts blindly**.
+4. Deploy and verify `/admin`, login/2FA, navigation, media, page editing, and public site routes.
+
+## Admin design revamp
+Admin layout is scoped to `app/admin/admin-revamp.css` and imported through `app/admin/layout.js`. It improves desktop scrolling sidebar, responsive mobile tab navigation, component spacing, and accessible focus states. It does not modify auth/database routes or data.
+
+## Rollback
+Revert the design commit in GitHub or promote an earlier Vercel deployment. This restores application code only, **not** database state. No database changes are required for the UI update.
