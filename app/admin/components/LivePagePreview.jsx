@@ -1,5 +1,6 @@
-import FormattedText from '../../components/FormattedText';
 'use client';
+
+import FormattedText from '../../components/FormattedText';
 
 function PreviewSection({ section, settings }) {
   if (!section) return null;
