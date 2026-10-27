@@ -1,3 +1,4 @@
+import './cms-base.css';
 import './admin-revamp.css';
 export const metadata = {
   title: 'Secure Admin | CoreTax CMS',

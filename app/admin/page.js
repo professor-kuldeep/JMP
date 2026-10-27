@@ -8,6 +8,7 @@ import SeoPreview from './components/SeoPreview';
 import FormattingEditor from './components/FormattingEditor';
 import '../components/formatted-text.css';
 import TurnstileWidget from '../components/TurnstileWidget';
+import Icon from '../components/Icon';
 
 const emptyPage = {
   id: null, slug: '', title: '', seoTitle: '', metaDescription: '', ogTitle: '', ogDescription: '', ogImage: '', canonicalUrl: '', noIndex: false,
@@ -32,10 +33,11 @@ const pagePresets = {
 };
 
 function StatCard({ label, value, note, onClick }) {
-  return <button type="button" className={`admin-stat ${onClick ? 'clickable' : ''}`} onClick={onClick}><span>{label}</span><strong>{value}</strong>{note && <small>{note}</small>}</button>;
+  const icons = { Pages: 'document', Drafts: 'edit', 'New Enquiries': 'mail', Media: 'image' };
+  return <button type="button" className={`admin-stat ${onClick ? 'clickable' : ''}`} onClick={onClick}><div className="stat-label-row"><span>{label}</span><span className="stat-icon"><Icon name={icons[label] || 'chart'} size={19}/></span></div><strong>{value}</strong>{note && <small>{note}</small>}</button>;
 }
 
-function Field({ label, value, onChange, textarea = false, richText = false, type = 'text', placeholder = '', help = '', counter = null }) {
+function Field({ label, value, onChange, textarea = false, richText = false, type = 'text', placeholder = '', help = '', counter = null, autoComplete, required = false }) {
   const fieldId = useId();
   const helpId = `${fieldId}-help`;
   const counterId = `${fieldId}-counter`;
@@ -55,7 +57,7 @@ function Field({ label, value, onChange, textarea = false, richText = false, typ
     <div className="field-label-row"><label htmlFor={fieldId}>{label}</label>{characterCount}</div>
     {textarea
       ? <textarea id={fieldId} value={value ?? ''} placeholder={placeholder} rows={4} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)} />
-      : <input id={fieldId} type={type} value={value ?? ''} placeholder={placeholder} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)} />}
+      : <input id={fieldId} type={type} autoComplete={autoComplete} required={required} value={value ?? ''} placeholder={placeholder} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)} />}
     {help && <p id={helpId} className="small field-help">{help}</p>}
   </div>;
 }
@@ -70,6 +72,7 @@ function formatDate(value) {
 
 export default function AdminPage() {
   const [session, setSession] = useState(null);
+  const [checkingSession, setCheckingSession] = useState(true);
   const [csrfToken, setCsrfToken] = useState('');
   const [login, setLogin] = useState({ username: 'admin', password: '', otp: '' });
   const [message, setMessage] = useState('');
@@ -125,6 +128,7 @@ export default function AdminPage() {
   async function checkSession() {
     try { const data = await api('/api/admin/me'); setSession(data.user); setCsrfToken(data.csrfToken || ''); await loadAll(data.user); }
     catch { setSession(null); }
+    finally { setCheckingSession(false); }
   }
 
   async function loadAll(user = session) {
@@ -160,13 +164,14 @@ export default function AdminPage() {
   }, [editing]);
 
   async function handleLogin(event) {
-    event.preventDefault(); setMessage('');
+    event.preventDefault(); if (saving) return; setSaving(true); setMessage('');
     try {
       const data = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ ...login, turnstileToken }) });
       setSession(data.user); setCsrfToken(data.csrfToken || ''); setTab(data.user?.mustChangePassword ? 'account' : 'dashboard');
       setTurnstileToken(''); setTurnstileReset((v) => v + 1); await loadAll(data.user);
       if (data.recoveryCodeUsed) notify('Recovery code accepted. Generate a fresh set of recovery codes soon.', 'info');
     } catch (error) { setTurnstileToken(''); setTurnstileReset((v) => v + 1); notify(error.message, 'error'); }
+    finally { setSaving(false); }
   }
 
   async function logout() { await api('/api/admin/logout', { method: 'POST' }); setSession(null); setCsrfToken(''); }
@@ -369,7 +374,18 @@ export default function AdminPage() {
   const latestEnquiries = useMemo(() => enquiries.slice(0, 5), [enquiries]);
   const filteredSecurityEvents = useMemo(() => { const q = securitySearch.toLowerCase().trim(); return securityEvents.filter((event) => !q || JSON.stringify(event).toLowerCase().includes(q)); }, [securityEvents, securitySearch]);
 
-  if (!session) return <main className="admin-shell"><div className="login-box"><span className="eyebrow">Secure Admin Access</span><h1>CoreTax CMS Login</h1><p className="small">Use your own administrator account, password and authenticator code. A one-time recovery code can also be used if your authenticator is unavailable.</p><form onSubmit={handleLogin}><Field label="Username" value={login.username} onChange={(v) => setLogin({ ...login, username: v })} /><Field label="Password" type="password" value={login.password} onChange={(v) => setLogin({ ...login, password: v })} /><Field label="Authenticator / Recovery Code" value={login.otp} placeholder="6-digit code or recovery code" onChange={(v) => setLogin({ ...login, otp: v.toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 20) })} /><TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} action="admin_login" /><button className="btn">Secure Login</button></form><p className="small"><a href="/reset-password">Forgot password?</a></p><p className="small field-help">Protected by rate limiting, 2FA/recovery codes, revocable sessions, CSRF checks and audit logging.</p>{message && <p className={`form-status ${messageType}`}>{message}</p>}</div></main>;
+  if (checkingSession) return <main id="main-content" className="admin-shell admin-loading" aria-busy="true"><span className="cms-loader"/><p role="status">Opening your workspace…</p></main>;
+
+  if (!session) return <main id="main-content" className="admin-shell admin-login">
+    <aside className="login-story"><a className="login-wordmark" href="/">JMP<span>CORETAX CMS</span></a><div className="login-story-copy"><span className="login-overline">YOUR DIGITAL WORKSPACE</span><h2>A considered home<br/>for your content.</h2><p>Manage your pages, publish your insights and keep your website moving forward.</p><div className="login-capabilities"><span><Icon name="document" size={18}/>Content & pages</span><span><Icon name="palette" size={18}/>Brand & appearance</span><span><Icon name="shield" size={18}/>Account security</span></div></div><div className="login-story-foot">J M Pabari &amp; Associates<span>Chartered Accountants</span></div></aside>
+    <div className="login-form-panel"><a className="login-back" href="/">← Back to website</a><div className="login-box"><span className="login-security-mark"><Icon name="shield" size={22}/></span><span className="eyebrow">Admin workspace</span><h1>Welcome back.</h1><p className="login-intro">Sign in to manage your website.</p><form onSubmit={handleLogin}>
+      <Field label="Username" value={login.username} autoComplete="username" required onChange={(v) => setLogin({ ...login, username: v })}/>
+      <Field label="Password" type="password" value={login.password} autoComplete="current-password" required onChange={(v) => setLogin({ ...login, password: v })}/>
+      <Field label="Authenticator / Recovery Code" value={login.otp} autoComplete="one-time-code" placeholder="6-digit code or recovery code" help="Use your authenticator code or a one-time recovery code." onChange={(v) => setLogin({ ...login, otp: v.toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 20) })}/>
+      <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} action="admin_login"/>
+      <button className="btn" disabled={saving}>{saving ? 'Signing in…' : 'Sign in to workspace'}<Icon name="arrow" size={18}/></button>
+    </form><a className="forgot-password" href="/reset-password">Forgot your password?</a>{message && <p className={`form-status ${messageType}`} role="alert">{message}</p>}<p className="login-protection"><Icon name="shield" size={14}/>Protected with account verification and secure sessions.</p></div></div>
+  </main>;
 
   const persistent = Boolean(storage?.storage?.persistent); const blobReady = Boolean(storage?.blob);
   const nav = [
@@ -389,15 +405,17 @@ export default function AdminPage() {
     ['help','Help','?', 'help']
   ].filter(([, , , permission]) => permission === 'help' || permission === 'account' || (permission === 'super_admin' ? session.role === 'super_admin' : can(permission)));
 
-  return <main className="admin-shell">
-    <div className="admin-top"><div className="admin-brand"><strong>CoreTax Site Control Panel</strong><span className="admin-version">CoreTax CMS · v6</span></div><div className="admin-actions"><a className="admin-btn light" href="/" target="_blank" rel="noreferrer">View Website ↗</a><button className="admin-btn light" onClick={loadAll}>Refresh</button><button className="admin-btn danger" onClick={logout}>Logout</button></div></div>
+  const navIcons = { dashboard: 'home', pages: 'document', blog: 'edit', media: 'image', enquiries: 'mail', menus: 'menu', forms: 'briefcase', appearance: 'palette', settings: 'settings', users: 'people', security: 'shield', account: 'people', backup: 'refresh', help: 'help' };
+  const displayName = session.displayName || session.username || 'Administrator';
+  return <main id="main-content" className="admin-shell">
+    <div className="admin-top"><div className="admin-brand"><span className="admin-brand-mark">JMP</span><div><strong>CoreTax CMS</strong><span className="admin-version">Website workspace</span></div></div><div className="admin-actions"><span className="admin-account-label"><span>{displayName.slice(0, 1).toUpperCase()}</span>{displayName}</span><a className="admin-btn light" href="/" target="_blank" rel="noreferrer">View website<Icon name="diagonal" size={14}/></a><button type="button" className="admin-btn light" onClick={() => loadAll()} aria-label="Refresh workspace"><Icon name="refresh" size={15}/></button><button className="admin-btn danger" onClick={logout}>Logout</button></div></div>
     <div className="admin-layout">
-      <aside className="admin-sidebar" aria-label="CMS navigation"><div className="admin-sidebar-heading"><span className="admin-sidebar-overline">WORKSPACE</span><strong>Manage your website</strong><small>Content, design & security</small></div><nav className="admin-nav" aria-label="Admin sections">{nav.map(([key,label,icon]) => <button type="button" key={key} title={label} aria-current={tab === key || (key === 'pages' && tab === 'edit-page') ? 'page' : undefined} className={tab === key || (key === 'pages' && tab === 'edit-page') ? 'active' : ''} onClick={() => setTab(key)}><span aria-hidden="true" className="admin-nav-icon">{icon}</span><span className="admin-nav-label">{label}</span></button>)}</nav><div className="admin-sidebar-foot"><span className="admin-status-dot"/>CMS workspace <span className="admin-sidebar-foot-muted">· Secure access</span></div></aside>
+      <aside className="admin-sidebar" aria-label="CMS navigation"><div className="admin-sidebar-heading"><span className="admin-sidebar-overline">WORKSPACE</span><strong>Manage your website</strong><small>Content, design & security</small></div><nav className="admin-nav" aria-label="Admin sections">{nav.map(([key,label,icon]) => <button type="button" key={key} title={label} aria-current={tab === key || (key === 'pages' && tab === 'edit-page') ? 'page' : undefined} className={tab === key || (key === 'pages' && tab === 'edit-page') ? 'active' : ''} onClick={() => setTab(key)}><span className="admin-nav-icon"><Icon name={navIcons[key]} size={18}/></span><span className="admin-nav-label">{label}</span>{key === 'enquiries' && enquiries.some(e => (e.status || 'new') === 'new') && <span className="admin-nav-count">{enquiries.filter(e => (e.status || 'new') === 'new').length}</span>}</button>)}</nav><div className="admin-sidebar-foot"><span className="admin-status-dot"/>CMS workspace <span className="admin-sidebar-foot-muted">· Secure access</span></div></aside>
       <section className="admin-main">
-        {message && <div className={`admin-notice ${messageType}`}><strong>{message}</strong><button onClick={() => setMessage('')}>×</button></div>}
+        {message && <div className={`admin-notice ${messageType}`}><strong role="status">{message}</strong><button aria-label="Dismiss notification" onClick={() => setMessage('')}>×</button></div>}
 
         {tab === 'dashboard' && <>
-          <div className="admin-page-head"><div><span className="eyebrow">Welcome back</span><h2>Website Dashboard</h2><p className="small">The most common website tasks are one click away.</p></div><div className="admin-actions">{can('pages:write') && <><button className="admin-btn" onClick={() => editPage(null, 'blank')}>+ New Page</button><button className="admin-btn light" onClick={() => editPage(null, 'blog')}>+ New Blog</button></>}</div></div>
+          <div className="admin-page-head dashboard-welcome"><div><span className="eyebrow">Your workspace at a glance</span><h2>Welcome back, {displayName.split(' ')[0]}.</h2><p className="small">A little clarity. A productive day. Everything you need is right here.</p></div><div className="admin-actions">{can('pages:write') && <><button className="admin-btn" onClick={() => editPage(null, 'blank')}>+ New Page</button><button className="admin-btn light" onClick={() => editPage(null, 'blog')}>+ New Blog</button></>}</div></div>
           <div className="admin-stats-grid">{can('pages:read') && <><StatCard label="Pages" value={pages.length} note={`${pages.filter(p => p.status === 'published').length} published`} onClick={() => setTab('pages')} /><StatCard label="Drafts" value={pages.filter(p => p.status === 'draft').length} note="Not visible publicly" onClick={() => setTab('pages')} /></>}{can('enquiries:read') && <StatCard label="New Enquiries" value={enquiries.filter(e => (e.status || 'new') === 'new').length} note={`${enquiries.length} total`} onClick={() => setTab('enquiries')} />}{can('media:read') && <StatCard label="Media" value={media.length} note="Images & files" onClick={() => setTab('media')} />}</div>
           {(can('pages:read') || can('enquiries:read')) && <div className="dashboard-grid">
             {can('pages:read') && <div className="admin-card"><div className="card-title-row"><h3>Recently Edited Pages</h3><button className="text-link" onClick={() => setTab('pages')}>View all</button></div>{recentPages.length ? <div className="simple-list">{recentPages.map((page) => <button key={page.id} onClick={() => editPage(page)}><span><b>{page.title}</b><small>{formatDate(page.updatedAt)}</small></span><em className={`pill ${page.status === 'draft' ? 'draft' : ''}`}>{page.status}</em></button>)}</div> : <EmptyPanel title="No pages yet" text="Create your first page to get started." />}</div>}
@@ -407,7 +425,7 @@ export default function AdminPage() {
           {(!persistent || !blobReady) && <div className="system-hint"><b>Setup note:</b> {!persistent ? 'Connect Supabase for permanent CMS changes. ' : ''}{!blobReady ? 'Configure Supabase Storage for media uploads.' : ''}{can('settings:write') && <button onClick={() => setTab('settings')}>View system setup</button>}</div>}
         </>}
 
-        {tab === 'pages' && <div className="admin-card"><div className="admin-page-head"><div><h2>Pages</h2><p className="small">Create, edit, duplicate, publish and organize website pages.</p></div><div className="admin-actions">{can('pages:write') && <><button className="admin-btn light" onClick={() => editPage(null, 'service')}>+ Service Page</button><button className="admin-btn" onClick={() => editPage(null, 'blank')}>+ Add Page</button></>}</div></div><div className="field search-field"><input placeholder="Search pages..." value={pageSearch} onChange={(e) => setPageSearch(e.target.value)} /></div><div className="table-wrap"><table className="admin-table"><thead><tr><th>Page</th><th>URL</th><th>Status</th><th>Type</th><th>Updated</th><th>Actions</th></tr></thead><tbody>{filteredPages.map((page) => <tr key={page.id}><td><strong>{page.title}</strong><br/><span className="small">{page.seoTitle || 'SEO title not set'}</span></td><td><code>{page.slug === 'home' ? '/' : `/${page.slug}`}</code></td><td>{can('pages:publish') ? <button className={`pill ${page.status === 'draft' ? 'draft' : ''}`} onClick={() => togglePublish(page)}>{page.status}</button> : <span className={`pill ${page.status === 'draft' ? 'draft' : ''}`}>{page.status}</span>}</td><td>{page.template}</td><td className="small">{formatDate(page.updatedAt)}</td><td><div className="admin-actions compact"><button className="admin-btn light" onClick={() => editPage(page)}>Edit</button>{can('pages:write') && <button className="admin-btn light" onClick={() => duplicatePage(page)}>Duplicate</button>}{page.status === 'published' && <a className="admin-btn light" href={page.slug === 'home' ? '/' : `/${page.slug}`} target="_blank" rel="noreferrer">View</a>}{page.slug !== 'home' && can('pages:delete') && <button className="admin-btn danger" onClick={() => deletePage(page.id)}>Delete</button>}</div></td></tr>)}</tbody></table></div>{filteredPages.length === 0 && <EmptyPanel title="No matching pages" text="Try a different search or add a new page." />}</div>}
+        {tab === 'pages' && <div className="admin-card"><div className="admin-page-head"><div><h2>Pages</h2><p className="small">Create, edit, duplicate, publish and organize website pages.</p></div><div className="admin-actions">{can('pages:write') && <><button className="admin-btn light" onClick={() => editPage(null, 'service')}>+ Service Page</button><button className="admin-btn" onClick={() => editPage(null, 'blank')}>+ Add Page</button></>}</div></div><div className="field search-field"><input aria-label="Search pages" placeholder="Search pages..." value={pageSearch} onChange={(e) => setPageSearch(e.target.value)} /></div><div className="table-wrap"><table className="admin-table"><thead><tr><th>Page</th><th>URL</th><th>Status</th><th>Type</th><th>Updated</th><th>Actions</th></tr></thead><tbody>{filteredPages.map((page) => <tr key={page.id}><td><strong>{page.title}</strong><br/><span className="small">{page.seoTitle || 'SEO title not set'}</span></td><td><code>{page.slug === 'home' ? '/' : `/${page.slug}`}</code></td><td>{can('pages:publish') ? <button className={`pill ${page.status === 'draft' ? 'draft' : ''}`} onClick={() => togglePublish(page)}>{page.status}</button> : <span className={`pill ${page.status === 'draft' ? 'draft' : ''}`}>{page.status}</span>}</td><td>{page.template}</td><td className="small">{formatDate(page.updatedAt)}</td><td><div className="admin-actions compact"><button className="admin-btn light" onClick={() => editPage(page)}>Edit</button>{can('pages:write') && <button className="admin-btn light" onClick={() => duplicatePage(page)}>Duplicate</button>}{page.status === 'published' && <a className="admin-btn light" href={page.slug === 'home' ? '/' : `/${page.slug}`} target="_blank" rel="noreferrer">View</a>}{page.slug !== 'home' && can('pages:delete') && <button className="admin-btn danger" onClick={() => deletePage(page.id)}>Delete</button>}</div></td></tr>)}</tbody></table></div>{filteredPages.length === 0 && <EmptyPanel title="No matching pages" text="Try a different search or add a new page." />}</div>}
 
         {tab === 'blog' && <div className="admin-card"><div className="admin-page-head"><div><h2>Blog Management</h2><p className="small">Manage articles, categories, authors, featured images and SEO. Published posts automatically appear at <a href="/blog" target="_blank" rel="noreferrer">/blog ↗</a>.</p></div>{can('pages:write') && <button className="admin-btn" onClick={() => editPage(null, 'blog')}>+ New Blog Post</button>}</div>
           <div className="blog-toolbar"><input aria-label="Search blog posts" placeholder="Search blog posts..." value={blogQuery} onChange={e=>setBlogQuery(e.target.value)}/><select aria-label="Filter blog posts" value={blogFilter} onChange={e=>setBlogFilter(e.target.value)}><option value="all">All posts ({blogPages.length})</option><option value="published">Published</option><option value="draft">Drafts</option>{[...new Set(blogPages.map(p=>p.blogCategory).filter(Boolean))].sort().map(c=><option key={c} value={c}>{c}</option>)}</select><a className="admin-btn light" href="/blog" target="_blank" rel="noreferrer">View Blog ↗</a></div>

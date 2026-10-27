@@ -23,7 +23,7 @@ export default function LivePagePreview({ page, settings = {}, device = 'desktop
       <header className="lp-header"><div className="lp-logo">{settings.logo ? <img src={settings.logo} alt="" /> : <b>{settings.siteName || 'JM Pabari'}</b>}</div><div className="lp-nav"><span>Home</span><span>Services</span><span>About</span><span>Contact</span></div></header>
       <section className="lp-hero">
         <div><small>{page.heroKicker}</small><h2>{page.heroTitle || page.title || 'Page Heading'}</h2><p>{page.heroText || 'Your page introduction will appear here.'}</p><div className="lp-actions">{page.button1Text && <span className="lp-btn">{page.button1Text}</span>}{page.button2Text && <span className="lp-btn secondary">{page.button2Text}</span>}</div></div>
-        <div className="lp-hero-image">{page.heroImage ? <img src={page.heroImage} alt="" /> : <span>Hero Image</span>}</div>
+        <div className="lp-hero-image">{page.heroImage || page.template === 'home' || page.slug === 'home' ? <img src={page.heroImage || '/assets/img/hero-desk.png'} alt="" /> : <span>{page.heroKicker || 'Professional services'}</span>}</div>
       </section>
       {(page.sections || []).map((section, index) => <PreviewSection key={index} section={section} settings={settings} />)}
       <footer className="lp-footer"><b>{settings.siteName || 'J M Pabari & Associates'}</b><span>{settings.footerText || 'Footer content'}</span></footer>
