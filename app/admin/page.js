@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import SectionBuilder, { newSection } from './components/SectionBuilder';
 import MenuBuilder from './components/MenuBuilder';
 import MediaPicker from './components/MediaPicker';
@@ -35,10 +35,29 @@ function StatCard({ label, value, note, onClick }) {
   return <button type="button" className={`admin-stat ${onClick ? 'clickable' : ''}`} onClick={onClick}><span>{label}</span><strong>{value}</strong>{note && <small>{note}</small>}</button>;
 }
 
-function Field({ label, value, onChange, textarea = false, type = 'text', placeholder = '', help = '', counter = null }) {
-  return <div className="field"><div className="field-label-row"><label>{label}</label>{counter !== null && <span className="field-counter">{String(value || '').length}/{counter}</span>}</div>{textarea
-    ? <FormattingEditor label={label} value={value || ''} placeholder={placeholder} onChange={onChange} />
-    : <input type={type} value={value ?? ''} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />}{help && <p className="small field-help">{help}</p>}</div>;
+function Field({ label, value, onChange, textarea = false, richText = false, type = 'text', placeholder = '', help = '', counter = null }) {
+  const fieldId = useId();
+  const helpId = `${fieldId}-help`;
+  const counterId = `${fieldId}-counter`;
+  const describedBy = [help ? helpId : '', counter !== null ? counterId : ''].filter(Boolean).join(' ') || undefined;
+  const characterCount = counter !== null && <span id={counterId} className="field-counter">{String(value ?? '').length}/{counter}</span>;
+
+  // FormattingEditor already renders its own label and toolbar.
+  if (textarea && richText) {
+    return <div className="field">
+      <FormattingEditor label={label} value={value ?? ''} placeholder={placeholder} onChange={onChange} />
+      {characterCount}
+      {help && <p id={helpId} className="small field-help">{help}</p>}
+    </div>;
+  }
+
+  return <div className="field">
+    <div className="field-label-row"><label htmlFor={fieldId}>{label}</label>{characterCount}</div>
+    {textarea
+      ? <textarea id={fieldId} value={value ?? ''} placeholder={placeholder} rows={4} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)} />
+      : <input id={fieldId} type={type} value={value ?? ''} placeholder={placeholder} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)} />}
+    {help && <p id={helpId} className="small field-help">{help}</p>}
+  </div>;
 }
 
 function EmptyPanel({ title, text, action }) {
@@ -404,7 +423,7 @@ export default function AdminPage() {
 
               {editing.template === 'blog' && <details className="admin-card edit-panel" open><summary><div><b>Blog Details</b><span>Category, author, publication date and featured image</span></div></summary><div className="panel-body"><div className="admin-grid three"><Field label="Category" value={editing.blogCategory || ''} onChange={v=>setEditing({...editing,blogCategory:v})} placeholder="Tax Insights"/><Field label="Author" value={editing.blogAuthor || ''} onChange={v=>setEditing({...editing,blogAuthor:v})} placeholder="Editorial Team"/><Field label="Publication Date" type="date" value={editing.blogDate || ''} onChange={v=>setEditing({...editing,blogDate:v})}/></div><p className="small">Use the Hero Image below as the featured image on the public blog listing. Use Hero Description for the article excerpt. Only published posts appear publicly.</p></div></details>}
 
-              <details className="admin-card edit-panel" open><summary><div><b>2. Hero Section</b><span>The first section visitors see</span></div></summary><div className="panel-body"><div className="admin-grid"><Field label="Small Kicker" value={editing.heroKicker} onChange={(v) => setEditing({ ...editing, heroKicker: v })} /><Field label="Hero Heading" value={editing.heroTitle} onChange={(v) => setEditing({ ...editing, heroTitle: v })} /><Field label="Primary Button Text" value={editing.button1Text} onChange={(v) => setEditing({ ...editing, button1Text: v })} /><Field label="Primary Button URL" value={editing.button1Url} onChange={(v) => setEditing({ ...editing, button1Url: v })} /><Field label="Secondary Button Text" value={editing.button2Text} onChange={(v) => setEditing({ ...editing, button2Text: v })} /><Field label="Secondary Button URL" value={editing.button2Url} onChange={(v) => setEditing({ ...editing, button2Url: v })} /></div><Field label="Hero Description" textarea value={editing.heroText} onChange={(v) => setEditing({ ...editing, heroText: v })} /><MediaPicker label="Hero Image" value={editing.heroImage} onChange={(v) => setEditing({ ...editing, heroImage: v })} media={media} onUpload={uploadMedia} /></div></details>
+              <details className="admin-card edit-panel" open><summary><div><b>2. Hero Section</b><span>The first section visitors see</span></div></summary><div className="panel-body"><div className="admin-grid"><Field label="Small Kicker" value={editing.heroKicker} onChange={(v) => setEditing({ ...editing, heroKicker: v })} /><Field label="Hero Heading" value={editing.heroTitle} onChange={(v) => setEditing({ ...editing, heroTitle: v })} /><Field label="Primary Button Text" value={editing.button1Text} onChange={(v) => setEditing({ ...editing, button1Text: v })} /><Field label="Primary Button URL" value={editing.button1Url} onChange={(v) => setEditing({ ...editing, button1Url: v })} /><Field label="Secondary Button Text" value={editing.button2Text} onChange={(v) => setEditing({ ...editing, button2Text: v })} /><Field label="Secondary Button URL" value={editing.button2Url} onChange={(v) => setEditing({ ...editing, button2Url: v })} /></div><Field label="Hero Description" textarea richText value={editing.heroText} onChange={(v) => setEditing({ ...editing, heroText: v })} /><MediaPicker label="Hero Image" value={editing.heroImage} onChange={(v) => setEditing({ ...editing, heroImage: v })} media={media} onUpload={uploadMedia} /></div></details>
 
               <div className="admin-card"><SectionBuilder sections={editing.sections || []} onChange={(sections) => setEditing({ ...editing, sections })} media={media} onUploadMedia={uploadMedia} /></div>
 
@@ -445,7 +464,7 @@ export default function AdminPage() {
           <p className="small">WordPress-style Additional CSS: applies to published website pages, not the Admin panel. Save to publish. Up to 20,000 characters; JavaScript, CSS imports and external URLs are blocked.</p>
           <textarea className="appearance-css-editor" aria-label="Custom CSS" spellCheck={false} placeholder={"/* Example */\n.site-header { box-shadow: 0 2px 12px #0002; }"} value={settings.customCss || ''} onChange={e => setSettings({...settings, customCss:e.target.value})} rows={13}/>
           <div className="appearance-css-foot"><span>{(settings.customCss || '').length.toLocaleString()} / 20,000 characters</span><button type="button" className="admin-btn light" onClick={() => { if(confirm('Clear all custom CSS? Remember to save your changes.')) setSettings({...settings,customCss:''}); }}>Clear CSS</button></div>
-          <Field label="Footer Text" textarea value={settings.footerText} onChange={v => setSettings({...settings,footerText:v})}/>
+          <Field label="Footer Text" textarea richText value={settings.footerText} onChange={v => setSettings({...settings,footerText:v})}/>
         </form>}
 
         {tab === 'settings' && <form className="admin-card" onSubmit={saveSettings}><div className="admin-page-head"><div><h2>Site Settings</h2><p className="small">Business details and system connection status.</p></div><button className="admin-btn" disabled={saving}>Save Settings</button></div><div className="admin-grid"><Field label="Site Name" value={settings.siteName} onChange={(v) => setSettings({ ...settings, siteName: v })} /><Field label="Tagline" value={settings.tagline} onChange={(v) => setSettings({ ...settings, tagline: v })} /><Field label="Phone" value={settings.phone} onChange={(v) => setSettings({ ...settings, phone: v })} /><Field label="Email" type="email" value={settings.email} onChange={(v) => setSettings({ ...settings, email: v })} /><Field label="LinkedIn URL" value={settings.linkedin} onChange={(v) => setSettings({ ...settings, linkedin: v })} /><Field label="Facebook URL" value={settings.facebook} onChange={(v) => setSettings({ ...settings, facebook: v })} /><Field label="Instagram URL" value={settings.instagram} onChange={(v) => setSettings({ ...settings, instagram: v })} /></div><Field label="Business Address" textarea value={settings.address} onChange={(v) => setSettings({ ...settings, address: v })} /><div className="system-status-grid"><div className={`system-status ${persistent ? 'ok' : 'warn'}`}><b>CMS Database</b><span>{persistent ? 'Connected' : 'Setup needed'}</span><small>{storage?.storage?.provider || 'Unknown provider'}</small></div><div className={`system-status ${blobReady ? 'ok' : 'warn'}`}><b>Media Storage</b><span>{blobReady ? 'Connected' : 'Setup needed'}</span><small>Supabase Storage</small></div></div></form>}
