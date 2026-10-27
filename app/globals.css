@@ -18,3 +18,9 @@ body:has(.admin-shell)>.site-header,body:has(.admin-shell)>.site-footer{display:
 @media(max-width:760px){.recovery-grid{grid-template-columns:1fr}.secret-row{align-items:stretch;flex-direction:column}.secret-row .admin-btn{align-self:flex-start}}
 
 .blog-article-byline{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding-top:20px;padding-bottom:16px;color:#546677;font-size:14px}.blog-article-byline span:first-child{font-weight:800;color:#154b78}.blog-article-byline a{margin-left:auto;color:#154b78;font-weight:700;text-decoration:none}
+
+/* Appearance panel CSS variables. Existing component rules remain unchanged. */
+body:not(:has(.admin-shell)){background-color:var(--page-background,#fff);color:var(--text-color,#25313d)}
+body:not(:has(.admin-shell)) h1,body:not(:has(.admin-shell)) h2,body:not(:has(.admin-shell)) h3{color:var(--heading-color,var(--primary))}
+body:not(:has(.admin-shell)) a:not(.btn):not(.button){color:var(--link-color,var(--primary))}
+body:not(:has(.admin-shell)) .site-footer{background:var(--footer-background,#0b2239)}
