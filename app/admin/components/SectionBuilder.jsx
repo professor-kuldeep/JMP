@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import MediaPicker from './MediaPicker';
+import FormattingEditor from './FormattingEditor';
 
 const defaults = {
   text: { type: 'text', kicker: '', title: 'New Text Section', text: '' },
@@ -19,7 +20,7 @@ export function newSection(type) {
 
 function TextField({ label, value, onChange, placeholder = '', textarea = false }) {
   return <div className="field"><label>{label}</label>{textarea
-    ? <textarea value={value || ''} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+    ? <FormattingEditor label={label} value={value || ''} placeholder={placeholder} onChange={onChange} />
     : <input value={value || ''} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />}</div>;
 }
 

@@ -1,15 +1,16 @@
+import FormattedText from '../../components/FormattedText';
 'use client';
 
 function PreviewSection({ section, settings }) {
   if (!section) return null;
   if (section.type === 'stats') return <div className="lp-stats">{(section.items || []).map((item, index) => <div key={index}><b>{item.value || '—'}</b><span>{item.label}</span></div>)}</div>;
-  if (section.type === 'split') return <section className="lp-section lp-split"><div><small>{section.kicker}</small><h3>{section.title}</h3><p>{section.text}</p>{section.buttonText && <span className="lp-btn">{section.buttonText}</span>}</div><div className="lp-mini-grid">{(section.cards || []).map((card, index) => <div className="lp-card" key={index}><b>{card.title}</b><span>{card.text}</span></div>)}</div></section>;
-  if (section.type === 'text') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><p>{section.text}</p></section>;
-  if (section.type === 'brand') return <section className="lp-section lp-brand">{section.logo && <img src={section.logo} alt="" />}<div><h3>{section.title}</h3><p>{section.text}</p></div></section>;
+  if (section.type === 'split') return <section className="lp-section lp-split"><div><small>{section.kicker}</small><h3>{section.title}</h3><FormattedText text={section.text}/>{section.buttonText && <span className="lp-btn">{section.buttonText}</span>}</div><div className="lp-mini-grid">{(section.cards || []).map((card, index) => <div className="lp-card" key={index}><b>{card.title}</b><FormattedText text={card.text}/></div>)}</div></section>;
+  if (section.type === 'text') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><FormattedText text={section.text}/></section>;
+  if (section.type === 'brand') return <section className="lp-section lp-brand">{section.logo && <img src={section.logo} alt="" />}<div><h3>{section.title}</h3><FormattedText text={section.text}/></div></section>;
   if (section.type === 'cards') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><div className="lp-card-grid">{(section.items || []).map((item, index) => <div className="lp-card" key={index}><b>{item.title}</b><span>{item.text}</span></div>)}</div></section>;
   if (section.type === 'process') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><div className="lp-process">{(section.items || []).map((item, index) => <div key={index}><i>{index + 1}</i><b>{item.title}</b><span>{item.text}</span></div>)}</div></section>;
-  if (section.type === 'cta') return <section className="lp-cta"><div><h3>{section.title}</h3><p>{section.text}</p></div>{section.buttonText && <span className="lp-btn">{section.buttonText}</span>}</section>;
-  if (section.type === 'contact') return <section className="lp-section lp-contact"><div><small>{section.kicker}</small><h3>{section.title}</h3><p>{section.text}</p><p><b>{settings?.phone || 'Phone'}</b><br/>{settings?.email || 'Email'}</p></div><div className="lp-form"><span>Name</span><span>Email</span><span>Phone</span><span className="large">Message</span><b>Submit Enquiry</b></div></section>;
+  if (section.type === 'cta') return <section className="lp-cta"><div><h3>{section.title}</h3><FormattedText text={section.text}/></div>{section.buttonText && <span className="lp-btn">{section.buttonText}</span>}</section>;
+  if (section.type === 'contact') return <section className="lp-section lp-contact"><div><small>{section.kicker}</small><h3>{section.title}</h3><FormattedText text={section.text}/><p><b>{settings?.phone || 'Phone'}</b><br/>{settings?.email || 'Email'}</p></div><div className="lp-form"><span>Name</span><span>Email</span><span>Phone</span><span className="large">Message</span><b>Submit Enquiry</b></div></section>;
   return null;
 }
 

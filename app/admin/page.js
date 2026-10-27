@@ -5,6 +5,8 @@ import MenuBuilder from './components/MenuBuilder';
 import MediaPicker from './components/MediaPicker';
 import LivePagePreview from './components/LivePagePreview';
 import SeoPreview from './components/SeoPreview';
+import FormattingEditor from './components/FormattingEditor';
+import '../components/formatted-text.css';
 import TurnstileWidget from '../components/TurnstileWidget';
 
 const emptyPage = {
@@ -35,7 +37,7 @@ function StatCard({ label, value, note, onClick }) {
 
 function Field({ label, value, onChange, textarea = false, type = 'text', placeholder = '', help = '', counter = null }) {
   return <div className="field"><div className="field-label-row"><label>{label}</label>{counter !== null && <span className="field-counter">{String(value || '').length}/{counter}</span>}</div>{textarea
-    ? <textarea value={value || ''} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+    ? <FormattingEditor label={label} value={value || ''} placeholder={placeholder} onChange={onChange} />
     : <input type={type} value={value ?? ''} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />}{help && <p className="small field-help">{help}</p>}</div>;
 }
 
