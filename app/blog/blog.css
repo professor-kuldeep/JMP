@@ -22,3 +22,19 @@
 .jmp-blog .blog-empty { padding: 65px 25px; text-align: center; border: 1px dashed #c5cdd3; background: var(--soft); color: var(--muted); border-radius: 5px; font-size: 13px; }
 @media (max-width: 1000px) { .jmp-blog .blog-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .jmp-blog .blog-cards { grid-template-columns: minmax(0, 1fr); } .jmp-blog .blog-heading { padding-block: 40px; } .jmp-blog .blog-heading p { font-size: 12px; } .jmp-blog .blog-body { padding-block: 27px 55px; } }
+.jmp-blog .blog-search { max-width: 620px; margin-bottom: 25px; }
+.jmp-blog .blog-search label { color: var(--muted); font-size: 12px; }
+.jmp-blog .blog-search > div { display: flex; gap: 10px; }
+.jmp-blog .blog-search input { min-width: 0; }
+.jmp-blog .blog-search .btn { min-height: 46px; }
+.jmp-blog .blog-results { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; color: var(--muted); font-size: 12px; margin: 0 0 27px; }
+.jmp-blog .blog-results a { text-decoration: underline; }
+.jmp-blog .blog-pagination { display: flex; align-items: center; justify-content: center; gap: 24px; padding-top: 35px; font-size: 12px; }
+.jmp-blog .blog-pagination a { padding: 9px 12px; border: 1px solid var(--border); border-radius: 4px; }
+.related-articles { background: var(--soft); }
+.related-article-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.related-article { display: flex; flex-direction: column; min-width: 0; padding: 26px; background: var(--surface-color); border: 1px solid var(--border); border-radius: 5px; }
+.related-article h3 { font-size: 29px; }
+.related-article p { color: var(--muted); font-size: 12px; }
+.related-article > a:last-child { font-size: 11px; margin-top: auto; }
+@media(max-width:800px) { .related-article-grid { grid-template-columns: minmax(0,1fr); } }

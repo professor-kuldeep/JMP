@@ -5,19 +5,21 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Icon from './Icon';
 
-export default function Header({ settings = {}, menus }) {
+export default function Header({ settings = {}, menus, preview = false }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(null);
   const root = useRef(null);
   const toggle = useRef(null);
-  const hidden = pathname.startsWith('/admin') || pathname.startsWith('/reset-password');
+  const hidden = !preview && (pathname.startsWith('/admin') || pathname.startsWith('/reset-password'));
   const header = menus?.header || [];
   const isActive = (url) => url && (url === '/' ? pathname === '/' : pathname === url.split('#')[0]);
 
   function close() { setOpen(false); setExpanded(null); }
 
   useEffect(() => {
+    const ownerDocument = root.current?.ownerDocument || document;
+    const ownerWindow = ownerDocument.defaultView || window;
     const dismiss = (event) => {
       if (event.key === 'Escape') {
         const submenu = root.current?.querySelector('.dropdown.expanded .dropdown-toggle');
@@ -26,14 +28,14 @@ export default function Header({ settings = {}, menus }) {
       }
       if (event.type === 'pointerdown' && !root.current?.contains(event.target)) close();
     };
-    const resize = () => { if (window.innerWidth > 1100) close(); };
-    document.addEventListener('keydown', dismiss);
-    document.addEventListener('pointerdown', dismiss);
-    window.addEventListener('resize', resize);
+    const resize = () => { if (ownerWindow.innerWidth > 1100) close(); };
+    ownerDocument.addEventListener('keydown', dismiss);
+    ownerDocument.addEventListener('pointerdown', dismiss);
+    ownerWindow.addEventListener('resize', resize);
     return () => {
-      document.removeEventListener('keydown', dismiss);
-      document.removeEventListener('pointerdown', dismiss);
-      window.removeEventListener('resize', resize);
+      ownerDocument.removeEventListener('keydown', dismiss);
+      ownerDocument.removeEventListener('pointerdown', dismiss);
+      ownerWindow.removeEventListener('resize', resize);
     };
   }, []);
 
@@ -48,7 +50,7 @@ export default function Header({ settings = {}, menus }) {
       </div></div>
       <div className="container header-inner">
         <Link className="logo" href="/" aria-label={`${settings.siteName || 'J M Pabari & Associates'} home`} onClick={close}>
-          <img src={settings.logo || '/assets/img/jm-logo.png'} alt={settings.siteName || 'J M Pabari & Associates'} width="290" height="60"/>
+          <img src={settings.logo || '/assets/img/jm-logo.webp'} alt={settings.siteName || 'J M Pabari & Associates'} width="290" height="60"/>
         </Link>
         <button ref={toggle} type="button" className={`menu-toggle ${open ? 'is-open' : ''}`} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-controls="primary-navigation" aria-expanded={open} onClick={() => { setOpen(!open); setExpanded(null); }}>
           <Icon name={open ? 'close' : 'menu'}/>
@@ -56,8 +58,8 @@ export default function Header({ settings = {}, menus }) {
         <nav id="primary-navigation" className={`nav ${open ? 'open' : ''}`} aria-label="Primary navigation">
           {header.map((item, index) => item.children?.length ? (
             <div className={`nav-item dropdown ${expanded === index ? 'expanded' : ''}`} key={`${item.label}-${index}`}
-              onPointerEnter={(event) => { if (event.pointerType === 'mouse' && window.innerWidth > 1100) setExpanded(index); }}
-              onPointerLeave={(event) => { if (event.pointerType === 'mouse' && window.innerWidth > 1100 && !event.currentTarget.contains(document.activeElement)) setExpanded(null); }}>
+              onPointerEnter={(event) => { if (event.pointerType === 'mouse' && (root.current?.ownerDocument.defaultView?.innerWidth || window.innerWidth) > 1100) setExpanded(index); }}
+              onPointerLeave={(event) => { if (event.pointerType === 'mouse' && (root.current?.ownerDocument.defaultView?.innerWidth || window.innerWidth) > 1100 && !event.currentTarget.contains(root.current?.ownerDocument.activeElement)) setExpanded(null); }}>
               <Link href={item.url || '#'} className={`nav-link ${isActive(item.url) ? 'active' : ''}`} aria-current={isActive(item.url) ? 'page' : undefined} onClick={close}>{item.label}</Link>
               <button className="dropdown-toggle" type="button" aria-label={`${expanded === index ? 'Close' : 'Open'} ${item.label} submenu`} aria-controls={`submenu-${index}`} aria-expanded={expanded === index} onClick={() => setExpanded(expanded === index ? null : index)}><Icon name="chevron" size={13}/></button>
               <div id={`submenu-${index}`} className="dropdown-menu">

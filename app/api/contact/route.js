@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { sendEnquiryEmails } from '../../lib/enquiry-mail.mjs';
 import { NextResponse } from 'next/server';
 import { getEnquiries, getSettings, nextId, saveEnquiries } from '../../lib/store';
 import { apiError } from '../../lib/api-error';
@@ -24,6 +25,7 @@ export async function POST(request) {
     const retained = enquiries.filter((item) => !item.createdAt || new Date(item.createdAt).getTime() >= cutoff);
     const enquiry = { id: nextId(retained), name, email, phone, service, message, status: 'new', notes: '', source: 'Website Contact Form', createdAt: new Date().toISOString(), sourceIpHash: crypto.createHmac('sha256', process.env.ADMIN_SECRET || 'contact-ip-local-key').update(getClientIp(request)).digest('hex').slice(0, 20) };
     await saveEnquiries([enquiry, ...retained].slice(0, 10000));
+    try { const delivery = await sendEnquiryEmails(enquiry, settings); if (delivery.failed) console.warn('An enquiry was saved but an email could not be delivered.'); } catch { console.warn('An enquiry was saved but email delivery was unavailable.'); }
     return NextResponse.json({ success: true });
   } catch (error) { return apiError(error); }
 }

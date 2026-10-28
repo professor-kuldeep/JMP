@@ -1,0 +1,668 @@
+{
+  "version": 2,
+  "pages": [
+    {
+      "slug": "audit-assurance",
+      "title": "Audit & Assurance",
+      "template": "service",
+      "status": "published",
+      "order": 20,
+      "seoTitle": "Audit & Assurance | J M Pabari & Associates",
+      "metaDescription": "Explore audit & assurance support, the discussion process and the information to prepare with J M Pabari & Associates.",
+      "heroKicker": "Professional Services",
+      "heroTitle": "Audit and assurance with a clear, structured process.",
+      "heroText": "Discuss the type of review, relevant reporting period and any stakeholder requirements.",
+      "heroImage": "",
+      "button1Text": "Discuss your requirement →",
+      "button1Url": "/contact",
+      "button2Text": "All services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Is this for you?",
+          "title": "Who can we help?",
+          "text": "Businesses and organisations looking for independent review, organised working papers and clear reporting."
+        },
+        {
+          "type": "cards",
+          "kicker": "Prepare for the discussion",
+          "title": "Useful information to have ready",
+          "items": [
+            {
+              "title": "Financial statements and ledgers",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Supporting invoices and agreements",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Previous reports and reconciliations",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How it works",
+          "title": "From your first question to a clear scope",
+          "items": [
+            {
+              "title": "Tell us what you need",
+              "text": "Share your business context, the task and any relevant deadline."
+            },
+            {
+              "title": "Agree the scope",
+              "text": "The team reviews the information available and confirms the work, documents and next steps."
+            },
+            {
+              "title": "Work through the requirement",
+              "text": "Coordinate the agreed work, queries and reporting with the appropriate team."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "kicker": "Common questions",
+          "title": "Before we get started",
+          "items": [
+            {
+              "question": "What documents should I send first?",
+              "answer": "Start by describing your requirement. The team will confirm the documents needed for the agreed scope; avoid sending sensitive records through the general enquiry form."
+            },
+            {
+              "question": "How long will the work take?",
+              "answer": "The timeline depends on the scope, the records available and the applicable requirements. Discuss any deadline at the start so the team can confirm availability."
+            },
+            {
+              "question": "How are the fees decided?",
+              "answer": "Fees are discussed after the team understands the work, complexity and information involved. Ask for the scope and fee arrangement before proceeding."
+            },
+            {
+              "question": "Can I discuss an existing issue?",
+              "answer": "Yes. Summarise the issue and any relevant deadline in your enquiry. The team can then explain what information is needed to assess it."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Let’s clarify your next step.",
+          "text": "Share the service you need and a short description of your requirement.",
+          "buttonText": "Send an enquiry →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    },
+    {
+      "slug": "income-tax-services",
+      "title": "Income Tax Services",
+      "template": "service",
+      "status": "published",
+      "order": 21,
+      "seoTitle": "Income Tax Services | J M Pabari & Associates",
+      "metaDescription": "Explore income tax services support, the discussion process and the information to prepare with J M Pabari & Associates.",
+      "heroKicker": "Professional Services",
+      "heroTitle": "A clearer approach to your income tax requirements.",
+      "heroText": "Share the nature of your requirement so the team can identify the relevant information and scope.",
+      "heroImage": "",
+      "button1Text": "Discuss your requirement →",
+      "button1Url": "/contact",
+      "button2Text": "All services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Is this for you?",
+          "title": "Who can we help?",
+          "text": "Individuals, professionals, firms and companies seeking help with tax documentation, returns or a specific query."
+        },
+        {
+          "type": "cards",
+          "kicker": "Prepare for the discussion",
+          "title": "Useful information to have ready",
+          "items": [
+            {
+              "title": "Income records and relevant statements",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Previous returns and correspondence",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Details of the matter you want reviewed",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How it works",
+          "title": "From your first question to a clear scope",
+          "items": [
+            {
+              "title": "Tell us what you need",
+              "text": "Share your business context, the task and any relevant deadline."
+            },
+            {
+              "title": "Agree the scope",
+              "text": "The team reviews the information available and confirms the work, documents and next steps."
+            },
+            {
+              "title": "Work through the requirement",
+              "text": "Coordinate the agreed work, queries and reporting with the appropriate team."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "kicker": "Common questions",
+          "title": "Before we get started",
+          "items": [
+            {
+              "question": "What documents should I send first?",
+              "answer": "Start by describing your requirement. The team will confirm the documents needed for the agreed scope; avoid sending sensitive records through the general enquiry form."
+            },
+            {
+              "question": "How long will the work take?",
+              "answer": "The timeline depends on the scope, the records available and the applicable requirements. Discuss any deadline at the start so the team can confirm availability."
+            },
+            {
+              "question": "How are the fees decided?",
+              "answer": "Fees are discussed after the team understands the work, complexity and information involved. Ask for the scope and fee arrangement before proceeding."
+            },
+            {
+              "question": "Can I discuss an existing issue?",
+              "answer": "Yes. Summarise the issue and any relevant deadline in your enquiry. The team can then explain what information is needed to assess it."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Let’s clarify your next step.",
+          "text": "Share the service you need and a short description of your requirement.",
+          "buttonText": "Send an enquiry →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    },
+    {
+      "slug": "gst-services",
+      "title": "GST & Indirect Tax",
+      "template": "service",
+      "status": "published",
+      "order": 22,
+      "seoTitle": "GST & Indirect Tax | J M Pabari & Associates",
+      "metaDescription": "Explore gst & indirect tax support, the discussion process and the information to prepare with J M Pabari & Associates.",
+      "heroKicker": "Professional Services",
+      "heroTitle": "Keep your GST records and compliance work organised.",
+      "heroText": "Explain your business activity and current registrations, records and pending work.",
+      "heroImage": "",
+      "button1Text": "Discuss your requirement →",
+      "button1Url": "/contact",
+      "button2Text": "All services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Is this for you?",
+          "title": "Who can we help?",
+          "text": "Businesses that need support with GST records, reconciliation, filings or an indirect tax query."
+        },
+        {
+          "type": "cards",
+          "kicker": "Prepare for the discussion",
+          "title": "Useful information to have ready",
+          "items": [
+            {
+              "title": "Sales and purchase records",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Relevant registration and return records",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Reconciliations and correspondence",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How it works",
+          "title": "From your first question to a clear scope",
+          "items": [
+            {
+              "title": "Tell us what you need",
+              "text": "Share your business context, the task and any relevant deadline."
+            },
+            {
+              "title": "Agree the scope",
+              "text": "The team reviews the information available and confirms the work, documents and next steps."
+            },
+            {
+              "title": "Work through the requirement",
+              "text": "Coordinate the agreed work, queries and reporting with the appropriate team."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "kicker": "Common questions",
+          "title": "Before we get started",
+          "items": [
+            {
+              "question": "What documents should I send first?",
+              "answer": "Start by describing your requirement. The team will confirm the documents needed for the agreed scope; avoid sending sensitive records through the general enquiry form."
+            },
+            {
+              "question": "How long will the work take?",
+              "answer": "The timeline depends on the scope, the records available and the applicable requirements. Discuss any deadline at the start so the team can confirm availability."
+            },
+            {
+              "question": "How are the fees decided?",
+              "answer": "Fees are discussed after the team understands the work, complexity and information involved. Ask for the scope and fee arrangement before proceeding."
+            },
+            {
+              "question": "Can I discuss an existing issue?",
+              "answer": "Yes. Summarise the issue and any relevant deadline in your enquiry. The team can then explain what information is needed to assess it."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Let’s clarify your next step.",
+          "text": "Share the service you need and a short description of your requirement.",
+          "buttonText": "Send an enquiry →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    },
+    {
+      "slug": "accounting-bookkeeping",
+      "title": "Accounting & Bookkeeping",
+      "template": "service",
+      "status": "published",
+      "order": 23,
+      "seoTitle": "Accounting & Bookkeeping | J M Pabari & Associates",
+      "metaDescription": "Explore accounting & bookkeeping support, the discussion process and the information to prepare with J M Pabari & Associates.",
+      "heroKicker": "Professional Services",
+      "heroTitle": "Reliable records for a clearer view of your business.",
+      "heroText": "Accounting and operational support can be discussed with the associated CoreTax consultancy team.",
+      "heroImage": "",
+      "button1Text": "Discuss your requirement →",
+      "button1Url": "/contact",
+      "button2Text": "All services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Is this for you?",
+          "title": "Who can we help?",
+          "text": "Businesses that need organised accounts, regular reconciliations and practical reporting support."
+        },
+        {
+          "type": "cards",
+          "kicker": "Prepare for the discussion",
+          "title": "Useful information to have ready",
+          "items": [
+            {
+              "title": "Bank and payment statements",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Sales, purchase and expense records",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Opening balances and existing ledgers",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How it works",
+          "title": "From your first question to a clear scope",
+          "items": [
+            {
+              "title": "Tell us what you need",
+              "text": "Share your business context, the task and any relevant deadline."
+            },
+            {
+              "title": "Agree the scope",
+              "text": "The team reviews the information available and confirms the work, documents and next steps."
+            },
+            {
+              "title": "Work through the requirement",
+              "text": "Coordinate the agreed work, queries and reporting with the appropriate team."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "kicker": "Common questions",
+          "title": "Before we get started",
+          "items": [
+            {
+              "question": "What documents should I send first?",
+              "answer": "Start by describing your requirement. The team will confirm the documents needed for the agreed scope; avoid sending sensitive records through the general enquiry form."
+            },
+            {
+              "question": "How long will the work take?",
+              "answer": "The timeline depends on the scope, the records available and the applicable requirements. Discuss any deadline at the start so the team can confirm availability."
+            },
+            {
+              "question": "How are the fees decided?",
+              "answer": "Fees are discussed after the team understands the work, complexity and information involved. Ask for the scope and fee arrangement before proceeding."
+            },
+            {
+              "question": "Can I discuss an existing issue?",
+              "answer": "Yes. Summarise the issue and any relevant deadline in your enquiry. The team can then explain what information is needed to assess it."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Let’s clarify your next step.",
+          "text": "Share the service you need and a short description of your requirement.",
+          "buttonText": "Send an enquiry →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    },
+    {
+      "slug": "corporate-compliance",
+      "title": "Corporate Compliance",
+      "template": "service",
+      "status": "published",
+      "order": 24,
+      "seoTitle": "Corporate Compliance | J M Pabari & Associates",
+      "metaDescription": "Explore corporate compliance support, the discussion process and the information to prepare with J M Pabari & Associates.",
+      "heroKicker": "Professional Services",
+      "heroTitle": "A structured view of your corporate compliance work.",
+      "heroText": "Discuss your entity, reporting period and the specific task or outstanding matter.",
+      "heroImage": "",
+      "button1Text": "Discuss your requirement →",
+      "button1Url": "/contact",
+      "button2Text": "All services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Is this for you?",
+          "title": "Who can we help?",
+          "text": "Companies and business entities seeking help organising statutory records, documentation and compliance requirements."
+        },
+        {
+          "type": "cards",
+          "kicker": "Prepare for the discussion",
+          "title": "Useful information to have ready",
+          "items": [
+            {
+              "title": "Entity and registration documents",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Relevant resolutions and statutory records",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Previous filings and correspondence",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How it works",
+          "title": "From your first question to a clear scope",
+          "items": [
+            {
+              "title": "Tell us what you need",
+              "text": "Share your business context, the task and any relevant deadline."
+            },
+            {
+              "title": "Agree the scope",
+              "text": "The team reviews the information available and confirms the work, documents and next steps."
+            },
+            {
+              "title": "Work through the requirement",
+              "text": "Coordinate the agreed work, queries and reporting with the appropriate team."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "kicker": "Common questions",
+          "title": "Before we get started",
+          "items": [
+            {
+              "question": "What documents should I send first?",
+              "answer": "Start by describing your requirement. The team will confirm the documents needed for the agreed scope; avoid sending sensitive records through the general enquiry form."
+            },
+            {
+              "question": "How long will the work take?",
+              "answer": "The timeline depends on the scope, the records available and the applicable requirements. Discuss any deadline at the start so the team can confirm availability."
+            },
+            {
+              "question": "How are the fees decided?",
+              "answer": "Fees are discussed after the team understands the work, complexity and information involved. Ask for the scope and fee arrangement before proceeding."
+            },
+            {
+              "question": "Can I discuss an existing issue?",
+              "answer": "Yes. Summarise the issue and any relevant deadline in your enquiry. The team can then explain what information is needed to assess it."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Let’s clarify your next step.",
+          "text": "Share the service you need and a short description of your requirement.",
+          "buttonText": "Send an enquiry →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    },
+    {
+      "slug": "financial-advisory",
+      "title": "Financial & Business Advisory",
+      "template": "service",
+      "status": "published",
+      "order": 25,
+      "seoTitle": "Financial & Business Advisory | J M Pabari & Associates",
+      "metaDescription": "Explore financial & business advisory support, the discussion process and the information to prepare with J M Pabari & Associates.",
+      "heroKicker": "Professional Services",
+      "heroTitle": "Turn your financial information into useful next steps.",
+      "heroText": "Define the decision you are considering and the information available for review.",
+      "heroImage": "",
+      "button1Text": "Discuss your requirement →",
+      "button1Url": "/contact",
+      "button2Text": "All services",
+      "button2Url": "/our-services",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Is this for you?",
+          "title": "Who can we help?",
+          "text": "Business owners and management teams looking to understand performance, review projections or plan an operational decision."
+        },
+        {
+          "type": "cards",
+          "kicker": "Prepare for the discussion",
+          "title": "Useful information to have ready",
+          "items": [
+            {
+              "title": "Recent management and financial reports",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Budgets, forecasts and assumptions",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            },
+            {
+              "title": "Details of the business decision or question",
+              "text": "Share the records relevant to your requirement. The team will confirm the specific documents needed after reviewing the scope."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "kicker": "How it works",
+          "title": "From your first question to a clear scope",
+          "items": [
+            {
+              "title": "Tell us what you need",
+              "text": "Share your business context, the task and any relevant deadline."
+            },
+            {
+              "title": "Agree the scope",
+              "text": "The team reviews the information available and confirms the work, documents and next steps."
+            },
+            {
+              "title": "Work through the requirement",
+              "text": "Coordinate the agreed work, queries and reporting with the appropriate team."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "kicker": "Common questions",
+          "title": "Before we get started",
+          "items": [
+            {
+              "question": "What documents should I send first?",
+              "answer": "Start by describing your requirement. The team will confirm the documents needed for the agreed scope; avoid sending sensitive records through the general enquiry form."
+            },
+            {
+              "question": "How long will the work take?",
+              "answer": "The timeline depends on the scope, the records available and the applicable requirements. Discuss any deadline at the start so the team can confirm availability."
+            },
+            {
+              "question": "How are the fees decided?",
+              "answer": "Fees are discussed after the team understands the work, complexity and information involved. Ask for the scope and fee arrangement before proceeding."
+            },
+            {
+              "question": "Can I discuss an existing issue?",
+              "answer": "Yes. Summarise the issue and any relevant deadline in your enquiry. The team can then explain what information is needed to assess it."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Let’s clarify your next step.",
+          "text": "Share the service you need and a short description of your requirement.",
+          "buttonText": "Send an enquiry →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    }
+  ],
+  "updates": [
+    {
+      "slug": "resources",
+      "heroText": "Practical preparation checklists to help you organise records before speaking with our team.",
+      "sections": [
+        {
+          "type": "cards",
+          "kicker": "Preparation checklists",
+          "title": "Start with organised information",
+          "items": [
+            {
+              "title": "Business records checklist",
+              "text": "A simple list of records to gather before an accounting or bookkeeping discussion.",
+              "url": "/downloads/business-records-checklist.txt",
+              "linkText": "Download checklist",
+              "download": true
+            },
+            {
+              "title": "First discussion checklist",
+              "text": "Organise your questions, scope and existing records before your first meeting.",
+              "url": "/downloads/first-discussion-checklist.txt",
+              "linkText": "Download checklist",
+              "download": true
+            },
+            {
+              "title": "Month-end preparation",
+              "text": "Use this working list to prepare balances, records and open questions for review.",
+              "url": "/downloads/month-end-checklist.txt",
+              "linkText": "Download checklist",
+              "download": true
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "kicker": "Use the checklists",
+          "title": "Preparation starts with the right questions.",
+          "text": "These checklists help you organise a discussion. The specific records and requirements depend on your business and the work agreed with the team. Please use a secure channel for financial or identity documents."
+        },
+        {
+          "type": "cards",
+          "kicker": "Read and explore",
+          "title": "More useful starting points",
+          "items": [
+            {
+              "title": "Insights & Articles",
+              "text": "Browse articles and perspectives published by our team.",
+              "url": "/blog",
+              "linkText": "Browse insights"
+            },
+            {
+              "title": "Find a service",
+              "text": "Explore audit, tax, accounting and advisory support.",
+              "url": "/our-services",
+              "linkText": "Explore services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "careers",
+      "heroText": "Introduce yourself and the work that interests you. Our team will confirm whether a suitable opportunity is available.",
+      "sections": [
+        {
+          "type": "text",
+          "kicker": "Introduce yourself",
+          "title": "Tell us where you want to grow.",
+          "text": "Share a short introduction, your area of interest and relevant experience. Availability is confirmed individually; the areas below describe our work and do not represent confirmed vacancies."
+        },
+        {
+          "type": "cards",
+          "kicker": "Areas of work",
+          "title": "Where your interests may fit",
+          "items": [
+            {
+              "title": "Audit & Assurance",
+              "text": "Review, documentation and reporting work for businesses and organisations."
+            },
+            {
+              "title": "Tax & Compliance",
+              "text": "Records, coordination and work across taxation and business compliance."
+            },
+            {
+              "title": "Accounting & Reporting",
+              "text": "Bookkeeping, reconciliation and the preparation of business information."
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "kicker": "Your introduction",
+          "title": "What to include",
+          "text": "- Your name and preferred way to reach you\n- The area of work that interests you\n- Your qualifications and relevant experience\n- Your availability and location\n\nUse the enquiry page for an initial introduction. The team will confirm the appropriate channel for your CV and supporting information."
+        },
+        {
+          "type": "cta",
+          "title": "Start with an introduction.",
+          "text": "Tell us the area of work you are interested in and a little about your background.",
+          "buttonText": "Introduce yourself →",
+          "buttonUrl": "/contact"
+        }
+      ]
+    }
+  ]
+}

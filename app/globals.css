@@ -381,3 +381,31 @@ textarea { min-height: 120px; resize: vertical; }
 }
 
 .hero .formatted-text a, .cta-band .formatted-text a { color: inherit; text-decoration: underline; }
+
+/* FAQs and approved team profiles, editable in the CMS. */
+.faq-layout { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 75px; }
+.faq-list { border-top: 1px solid var(--border); }
+.faq-list details { border-bottom: 1px solid var(--border); padding: 23px 0; }
+.faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; cursor: pointer; list-style: none; color: var(--heading-color); font-size: 15px; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary span { color: #ab8850; font-size: 22px; font-weight: 400; }
+.faq-list details[open] summary span { transform: rotate(45deg); }
+.faq-list .formatted-text { margin-top: 18px; color: var(--muted); font-size: 13px; line-height: 1.9; }
+.team-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 25px; }
+.team-card { border: 1px solid var(--border); background: var(--surface-color); border-radius: 5px; overflow: hidden; }
+.team-card > img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.team-card > div { padding: 25px; }
+.team-card h3 { margin-bottom: 9px; }
+.team-role { color: var(--primary); font-size: 12px; }
+.team-qualifications, .team-card .formatted-text { color: var(--muted); font-size: 12px; }
+.team-card a { font-size: 11px; text-decoration: underline; }
+@media (max-width:800px) { .faq-layout { grid-template-columns: minmax(0,1fr); gap: 10px; } .team-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width:560px) { .team-grid { grid-template-columns: minmax(0,1fr); } .faq-list summary { font-size: 14px; } }
+.analytics-choice { position: fixed; z-index: 70; left: 24px; bottom: 24px; width: min(390px,calc(100% - 48px)); padding: 20px; background: white; border: 1px solid #d7dfe5; border-radius: 7px; box-shadow: 0 10px 50px #10273e25; color: #3c5368; }
+.analytics-choice p { font-size: 12px; margin: 0 0 15px; }
+.analytics-choice > div { display: flex; gap: 9px; justify-content: flex-end; }
+.analytics-choice button { border: 1px solid #d4dfe7; border-radius: 4px; padding: 9px 12px; background: white; color: #153e64; font-size: 11px; }
+.analytics-choice button:last-child { color: white; background: #153e64; border-color: #153e64; }
+.footer-brand .formatted-text { max-width: 290px; color: #bac9d5; font-size: 12px; line-height: 1.9; }
+.analytics-preferences { color: #a7bacb; padding: 0; border: 0; background: transparent; font-size: 9px; cursor: pointer; }
+.analytics-preferences:hover { color: white; text-decoration: underline; }

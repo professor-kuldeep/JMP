@@ -4,9 +4,10 @@ import { getMenus, getSettings, saveMenus, saveSettings } from '../../../lib/sto
 import { apiError } from '../../../lib/api-error';
 import { writeSecurityAudit } from '../../../lib/security';
 import { sanitizeCmsValue } from '../../../lib/validation';
+import { siteOrigin } from '../../../lib/seo.mjs';
 import { hasPermission } from '../../../lib/permissions';
 
-const FORM_KEYS = new Set(['formHeading','formSuccessMessage','formServices','enquiryRetentionDays']);
+const FORM_KEYS = new Set(['formHeading','formSuccessMessage','formServices','enquiryRetentionDays','notificationEmail','enquiryNotificationsEnabled','enquiryAcknowledgementEnabled','followUpHours']);
 const APPEARANCE_KEYS = new Set(['logo','footerLogo','primaryColor','accentColor','footerText','favicon','headingColor','textColor','backgroundColor','surfaceColor','linkColor','footerBackgroundColor','customCss']);
 
 function isAllowedAppearanceCss(value) {
@@ -43,6 +44,12 @@ export async function PUT(request) {
       if (!hasPermission(session.role, required)) return NextResponse.json({ message: `You do not have permission to change ${key}.` }, { status: 403 });
     }
 
+    if (requestedSettings.siteUrl && (!siteOrigin(requestedSettings) || !/^https?:\/\/[^\s/?#]+(?::[0-9]+)?\/?$/.test(requestedSettings.siteUrl))) return NextResponse.json({message:'Site URL must be an absolute website origin, such as https://example.com.'},{status:400});
+    for (const key of ['analyticsEnabled','enquiryNotificationsEnabled','enquiryAcknowledgementEnabled']) if (requestedSettings[key] != null && typeof requestedSettings[key] !== 'boolean') return NextResponse.json({message:`Invalid on/off value for ${key}.`},{status:400});
+    if (requestedSettings.analyticsEnabled && !/^G-[A-Z0-9]{4,20}$/.test(requestedSettings.gaMeasurementId || '')) return NextResponse.json({message:'Add a valid GA4 measurement ID before enabling analytics.'},{status:400});
+    if (requestedSettings.gaMeasurementId && !/^G-[A-Z0-9]{4,20}$/.test(requestedSettings.gaMeasurementId)) return NextResponse.json({message:'Enter a valid GA4 measurement ID (G-...).'}, {status:400});
+    if (requestedSettings.notificationEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestedSettings.notificationEmail)) return NextResponse.json({message:'Enter a valid enquiry notification email.'},{status:400});
+    if (requestedSettings.followUpHours != null && (!Number.isFinite(Number(requestedSettings.followUpHours)) || Number(requestedSettings.followUpHours) < 1 || Number(requestedSettings.followUpHours) > 720)) return NextResponse.json({message:'Follow-up reminders must be between 1 and 720 hours.'},{status:400});
     // Never trust CSS or theme values supplied by a browser client.
     const colorKeys = ['primaryColor','accentColor','headingColor','textColor','backgroundColor','surfaceColor','linkColor','footerBackgroundColor'];
     for (const key of colorKeys) {

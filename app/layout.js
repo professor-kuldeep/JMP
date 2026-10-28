@@ -1,7 +1,10 @@
 import './globals.css';
+import './components/formatted-text.css';
 import { Cormorant_Garamond, Poppins } from 'next/font/google';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import PublicAnalytics from './components/PublicAnalytics';
+import { siteOrigin } from './lib/seo.mjs';
 import PublicCustomCSS from './components/PublicCustomCSS';
 import { getMenus, getSettings } from './lib/store';
 
@@ -13,6 +16,7 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata() {
   const settings = await getSettings();
   return {
+    metadataBase: siteOrigin(settings, process.env) ? new URL(siteOrigin(settings, process.env)) : undefined,
     title: settings.siteName || 'J M Pabari & Associates',
     description: settings.tagline || 'Chartered Accountants website with admin CMS.',
     icons: settings.favicon ? { icon: [{ url: settings.favicon }] } : undefined
@@ -30,6 +34,7 @@ export default async function RootLayout({ children }) {
         '--surface-color': settings.surfaceColor || '#ffffff', '--link-color': settings.linkColor || settings.primaryColor || '#123c69',
         '--footer-background': settings.footerBackgroundColor || '#0b2239'
       }}>
+        <PublicAnalytics measurementId={settings.gaMeasurementId || ''} enabled={Boolean(settings.analyticsEnabled)}/>
         <PublicCustomCSS css={settings.customCss || ''}/>
         <Header settings={settings} menus={menus} />
         {children}

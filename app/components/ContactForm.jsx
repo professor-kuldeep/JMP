@@ -1,11 +1,12 @@
 'use client';
 import { useId, useState } from 'react';
 import Icon from './Icon';
+import { trackEvent } from '../lib/analytics.mjs';
 import TurnstileWidget from './TurnstileWidget';
 
 const fallbackServices = ['Accounting / Bookkeeping', 'GST Compliance', 'Income Tax', 'Audit & Assurance', 'Business Advisory', 'Other'];
 
-export default function ContactForm({ services = fallbackServices, heading = 'Send an Enquiry', successMessage = 'Thank you. Your enquiry has been submitted.' }) {
+export default function ContactForm({ services = fallbackServices, heading = 'Send an Enquiry', successMessage = 'Thank you. Your enquiry has been submitted.', preview = false }) {
   const formId = useId();
   const [failed, setFailed] = useState(false);
   const [status, setStatus] = useState(''); const [loading, setLoading] = useState(false);
@@ -13,11 +14,12 @@ export default function ContactForm({ services = fallbackServices, heading = 'Se
   const options = Array.isArray(services) && services.length ? services : fallbackServices;
 
   async function submit(event) {
-    event.preventDefault(); if (loading) return; setLoading(true); setStatus(''); setFailed(false);
+    event.preventDefault(); if (preview) return; if (loading) return; setLoading(true); setStatus(''); setFailed(false);
     const form = event.currentTarget; const payload = { ...Object.fromEntries(new FormData(form).entries()), turnstileToken };
     try {
       const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Unable to submit enquiry.');
+      trackEvent('generate_lead',{form_id:'enquiry'});
       setStatus(successMessage); form.reset(); setTurnstileToken(''); setTurnstileReset((value) => value + 1);
       setTimeout(() => { window.location.href = '/thank-you'; }, 650);
     } catch (error) { setFailed(true); setStatus(error.message || 'Something went wrong. Please try again.'); setTurnstileToken(''); setTurnstileReset((value) => value + 1); }
@@ -33,9 +35,9 @@ export default function ContactForm({ services = fallbackServices, heading = 'Se
       <div className="field"><label htmlFor={`${formId}-email`}>Email address <span aria-hidden="true">*</span></label><input id={`${formId}-email`} type="email" name="email" autoComplete="email" placeholder="you@company.com" maxLength={254} required/></div>
       <div className="field"><label htmlFor={`${formId}-phone`}>Phone number</label><input id={`${formId}-phone`} type="tel" name="phone" autoComplete="tel" placeholder="Your phone number" maxLength={40}/></div>
       <div className="field"><label htmlFor={`${formId}-service`}>Service of interest</label><select id={`${formId}-service`} name="service">{options.map((item) => <option key={item}>{item}</option>)}</select></div>
-      <div className="field field-full"><label htmlFor={`${formId}-message`}>How can we help? <span aria-hidden="true">*</span></label><textarea id={`${formId}-message`} name="message" placeholder="Tell us about your requirement…" maxLength={5000} required/></div>
+      <div className="field field-full"><label htmlFor={`${formId}-message`}>How can we help? <span aria-hidden="true">*</span></label><textarea id={`${formId}-message`} name="message" placeholder="Tell us about your requirement…" maxLength={4000} required/></div>
     </div>
-    <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} action="contact" />
+    {!preview && <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} action="contact" />}
     <button className="btn" disabled={loading}>{loading ? 'Submitting…' : 'Submit Enquiry'}<Icon name="arrow" size={18}/></button>
     {status && <div className={`form-status ${failed ? 'error' : 'success'}`} role={failed ? 'alert' : 'status'}>{status}</div>}
   </form>;

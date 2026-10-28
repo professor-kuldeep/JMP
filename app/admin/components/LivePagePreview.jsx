@@ -1,32 +1,99 @@
 'use client';
 
-import FormattedText from '../../components/FormattedText';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import PageRenderer from '../../components/PageRenderer';
 
-function PreviewSection({ section, settings }) {
-  if (!section) return null;
-  if (section.type === 'stats') return <div className="lp-stats">{(section.items || []).map((item, index) => <div key={index}><b>{item.value || '—'}</b><span>{item.label}</span></div>)}</div>;
-  if (section.type === 'split') return <section className="lp-section lp-split"><div><small>{section.kicker}</small><h3>{section.title}</h3><FormattedText text={section.text}/>{section.buttonText && <span className="lp-btn">{section.buttonText}</span>}</div><div className="lp-mini-grid">{(section.cards || []).map((card, index) => <div className="lp-card" key={index}><b>{card.title}</b><FormattedText text={card.text}/></div>)}</div></section>;
-  if (section.type === 'text') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><FormattedText text={section.text}/></section>;
-  if (section.type === 'brand') return <section className="lp-section lp-brand">{section.logo && <img src={section.logo} alt="" />}<div><h3>{section.title}</h3><FormattedText text={section.text}/></div></section>;
-  if (section.type === 'cards') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><div className="lp-card-grid">{(section.items || []).map((item, index) => <div className="lp-card" key={index}><b>{item.title}</b><span>{item.text}</span></div>)}</div></section>;
-  if (section.type === 'process') return <section className="lp-section"><small>{section.kicker}</small><h3>{section.title}</h3><div className="lp-process">{(section.items || []).map((item, index) => <div key={index}><i>{index + 1}</i><b>{item.title}</b><span>{item.text}</span></div>)}</div></section>;
-  if (section.type === 'cta') return <section className="lp-cta"><div><h3>{section.title}</h3><FormattedText text={section.text}/></div>{section.buttonText && <span className="lp-btn">{section.buttonText}</span>}</section>;
-  if (section.type === 'contact') return <section className="lp-section lp-contact"><div><small>{section.kicker}</small><h3>{section.title}</h3><FormattedText text={section.text}/><p><b>{settings?.phone || 'Phone'}</b><br/>{settings?.email || 'Email'}</p></div><div className="lp-form"><span>Name</span><span>Email</span><span>Phone</span><span className="large">Message</span><b>Submit Enquiry</b></div></section>;
-  return null;
-}
+const documentShell = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div id="preview-root"></div></body></html>';
+const widths = { desktop: 1280, tablet: 768, mobile: 390 };
 
-export default function LivePagePreview({ page, settings = {}, device = 'desktop' }) {
+export default function LivePagePreview({ page, settings = {}, menus = {}, device = 'desktop' }) {
+  const iframe = useRef(null);
+  const viewport = useRef(null);
+  const [frameDocument, setFrameDocument] = useState(null);
+  const [bounds, setBounds] = useState({ width: 430, height: 540 });
+  const [expanded, setExpanded] = useState(false);
+  const width = widths[device] || widths.desktop;
+  const scale = Math.min(1, bounds.width / width);
+
+  useEffect(() => {
+    // An iframe can finish loading before React hydrates the parent.
+    const connect = () => {
+      const doc = iframe.current?.contentDocument;
+      if (doc?.getElementById('preview-root')) setFrameDocument(doc);
+    };
+    const frame = iframe.current;
+    connect(); frame?.addEventListener('load', connect);
+    return () => frame?.removeEventListener('load', connect);
+  }, []);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(([entry]) => setBounds({ width: entry.contentRect.width, height: entry.contentRect.height }));
+    if (viewport.current) observer.observe(viewport.current);
+    return () => observer.disconnect();
+  }, [expanded]);
+
+  useEffect(() => {
+    if (!frameDocument) return;
+    const syncStyles = () => {
+      const copies = [...document.head.querySelectorAll('link[rel="stylesheet"], style')].map(node => node.cloneNode(true));
+      frameDocument.head.querySelectorAll('[data-preview-style]').forEach(node => node.remove());
+      for (const node of copies) { node.setAttribute('data-preview-style', ''); frameDocument.head.appendChild(node); }
+      frameDocument.documentElement.className = document.documentElement.className;
+      frameDocument.title = `${page?.title || 'Page'} preview`;
+    };
+    syncStyles();
+    const observer = new MutationObserver(syncStyles);
+    observer.observe(document.head, { childList: true, subtree: true, attributes: true, attributeFilter: ['href', 'media'] });
+    return () => observer.disconnect();
+  }, [frameDocument, page?.title]);
+
+  useEffect(() => {
+    if (!frameDocument) return;
+    const vars = {
+      '--primary': settings.primaryColor || '#123c69', '--accent': settings.accentColor || '#f2b84b',
+      '--heading-color': settings.headingColor || settings.primaryColor || '#123c69', '--text-color': settings.textColor || '#25313d',
+      '--page-background': settings.backgroundColor || '#fff', '--surface-color': settings.surfaceColor || '#fff',
+      '--link-color': settings.linkColor || settings.primaryColor || '#123c69', '--footer-background': settings.footerBackgroundColor || '#0b2239'
+    };
+    for (const [key, value] of Object.entries(vars)) frameDocument.body.style.setProperty(key, value);
+  }, [frameDocument, settings]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const close = event => { if (event.key === 'Escape') setExpanded(false); };
+    document.addEventListener('keydown', close);
+    frameDocument?.addEventListener('keydown', close);
+    return () => { document.removeEventListener('keydown', close); frameDocument?.removeEventListener('keydown', close); };
+  }, [expanded, frameDocument]);
+
+  function click(event) {
+    const link = event.target.closest?.('a');
+    if (!link) return;
+    event.preventDefault(); event.stopPropagation();
+    const href = link.getAttribute('href') || '';
+    const hash = href.includes('#') ? href.slice(href.indexOf('#') + 1) : '';
+    if (hash) frameDocument?.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+  }
+  function jump(bottom = false) {
+    const doc = iframe.current?.contentDocument;
+    if (doc) doc.defaultView?.scrollTo({ top: bottom ? doc.documentElement.scrollHeight : 0, behavior: 'smooth' });
+  }
   if (!page) return null;
-  return <div className={`live-preview-shell ${device}`}>
-    <div className="lp-browser"><span></span><span></span><span></span><div>{page.slug === 'home' ? '/' : `/${page.slug || 'new-page'}`}</div></div>
-    <div className="lp-site">
-      <header className="lp-header"><div className="lp-logo">{settings.logo ? <img src={settings.logo} alt="" /> : <b>{settings.siteName || 'JM Pabari'}</b>}</div><div className="lp-nav"><span>Home</span><span>Services</span><span>About</span><span>Contact</span></div></header>
-      <section className="lp-hero">
-        <div><small>{page.heroKicker}</small><h2>{page.heroTitle || page.title || 'Page Heading'}</h2><p>{page.heroText || 'Your page introduction will appear here.'}</p><div className="lp-actions">{page.button1Text && <span className="lp-btn">{page.button1Text}</span>}{page.button2Text && <span className="lp-btn secondary">{page.button2Text}</span>}</div></div>
-        <div className="lp-hero-image">{page.heroImage || page.template === 'home' || page.slug === 'home' ? <img src={page.heroImage || '/assets/img/hero-desk.png'} alt="" /> : <span>{page.heroKicker || 'Professional services'}</span>}</div>
-      </section>
-      {(page.sections || []).map((section, index) => <PreviewSection key={index} section={section} settings={settings} />)}
-      <footer className="lp-footer"><b>{settings.siteName || 'J M Pabari & Associates'}</b><span>{settings.footerText || 'Footer content'}</span></footer>
+  const target = frameDocument?.getElementById('preview-root');
+  return <div className={`live-preview-shell actual-preview ${device} ${expanded ? 'preview-expanded' : ''}`} role={expanded ? 'dialog' : undefined} aria-modal={expanded || undefined} aria-label={expanded ? 'Expanded page preview' : undefined}>
+    <div className="actual-preview-tools"><span>{width}px · {Math.round(scale * 100)}%</span><div><button type="button" onClick={() => jump()}>Top</button><button type="button" onClick={() => jump(true)}>Bottom</button><button type="button" onClick={() => setExpanded(!expanded)}>{expanded ? 'Close preview' : 'Expand'}</button></div></div>
+    <div className="preview-viewport" ref={viewport}>
+      <iframe ref={iframe} title={`${page.title || 'Page'} ${device} preview`} sandbox="allow-same-origin" srcDoc={documentShell} onLoad={event => { const doc = event.currentTarget.contentDocument; if (doc?.getElementById('preview-root')) setFrameDocument(doc); }} style={{ width, height: bounds.height / scale, transform: `scale(${scale})` }}/>
+      {target && createPortal(<div className="public-preview-document" onClickCapture={click} onSubmitCapture={event => { event.preventDefault(); event.stopPropagation(); }}>
+        {settings.customCss && <style>{String(settings.customCss).replace(/<\/style/gi, '')}</style>}
+        <Header settings={settings} menus={menus} preview/>
+        <PageRenderer page={page} settings={settings} preview/>
+        <Footer settings={settings} menus={menus} preview/>
+      </div>, target)}
     </div>
+    <div className="actual-preview-note">Scroll inside the page to see every section. Preview links and forms stay in the editor.</div>
   </div>;
 }

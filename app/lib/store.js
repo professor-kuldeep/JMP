@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import { cache } from 'react';
+import { isPublicPage } from './publishing.mjs';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabaseAdmin, getSupabaseStatus } from './supabase';
@@ -143,9 +145,9 @@ export function getStorageStatus() {
     message: status.configured ? 'Supabase PostgreSQL is connected.' : isProduction() ? 'Public pages use bundled seed content. Connect Supabase before using admin edits or enquiries.' : 'Using local development file storage.'
   };
 }
-export async function getSettings() { return (await readCollection('settings')) || {}; }
-export async function getMenus() { return (await readCollection('menus')) || { header: [], footer: [] }; }
-export async function getPages() { return (await readCollection('pages')) || []; }
+export const getSettings = cache(async () => (await readCollection('settings')) || {});
+export const getMenus = cache(async () => (await readCollection('menus')) || { header: [], footer: [] });
+export const getPages = cache(async () => (await readCollection('pages')) || []);
 export async function getEnquiries() { return (await readCollection('enquiries')) || []; }
 export async function getMedia() { return (await readCollection('media')) || []; }
 export async function getRevisions() { return (await readCollection('revisions')) || {}; }
@@ -158,6 +160,6 @@ export async function saveRevisions(value) { return writeCollection('revisions',
 export async function getData() { const [settings, menus, pages, enquiries, media, revisions] = await Promise.all([getSettings(), getMenus(), getPages(), getEnquiries(), getMedia(), getRevisions()]); return { settings, menus, pages, enquiries, media, revisions, updatedAt: new Date().toISOString(), schemaVersion: 6 }; }
 export async function saveData(data) { const normalized = normalizeData(data); await Promise.all([saveSettings(normalized.settings), saveMenus(normalized.menus), savePages(normalized.pages), saveEnquiries(normalized.enquiries), saveMedia(normalized.media), saveRevisions(normalized.revisions)]); return { ...normalized, updatedAt: new Date().toISOString(), schemaVersion: 6 }; }
 export async function replaceData(data) { return saveData(data); }
-export async function listPages(includeDrafts = false) { const pages = await getPages(); return pages.filter((page) => includeDrafts || page.status === 'published').sort((a, b) => (a.order || 999) - (b.order || 999)); }
+export async function listPages(includeDrafts = false) { const pages = await getPages(); return pages.filter((page) => includeDrafts || isPublicPage(page)).sort((a, b) => (a.order || 999) - (b.order || 999)); }
 export async function getPageBySlug(slug, includeDrafts = false) { const pages = await listPages(includeDrafts); const cleanSlug = slug === '/' ? 'home' : String(slug || 'home').replace(/^\//, '').replace(/\/$/, '') || 'home'; return pages.find((page) => page.slug === cleanSlug) || null; }
 export function nextId(items = []) { return items.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1; }
