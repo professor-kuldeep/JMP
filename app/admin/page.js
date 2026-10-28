@@ -12,6 +12,7 @@ import Icon from '../components/Icon';
 import { isPublicPage, publicationLabel, isEnquiryOverdue } from '../lib/publishing.mjs';
 import SiteHealth from './components/SiteHealth';
 import { DeliverySettings, SiteExtensionsSettings } from './components/SiteExtensionsSettings';
+import { DEFAULT_APPEARANCE } from '../lib/appearance.mjs';
 
 const emptyPage = {
   id: null, slug: '', title: '', seoTitle: '', metaDescription: '', ogTitle: '', ogDescription: '', ogImage: '', canonicalUrl: '', noIndex: false,
@@ -502,7 +503,8 @@ export default function AdminPage() {
             <MediaPicker label="Favicon (browser tab icon)" help="Use a square PNG, SVG or ICO image (32×32 or 48×48 recommended). Upload it to Media or paste its URL." value={settings.favicon || ''} onChange={(v) => setSettings({ ...settings, favicon:v })} media={media} onUpload={uploadMedia}/>
           </div>
           <h3>Website color palette</h3>
-          <p className="small">Changes update shared theme variables site-wide. Custom CSS below can override individual sections.</p>
+          <p className="small">Changes update the website and page preview. Text colors adjust where needed to stay readable on the selected backgrounds. Custom CSS below can override individual sections.</p>
+          <p><button type="button" className="admin-btn light" onClick={() => setSettings(current => ({ ...current, ...DEFAULT_APPEARANCE }))}>Restore default colors</button><span className="small"> Select Save Appearance to publish the restored palette.</span></p>
           <div className="admin-grid">{[
             ['primaryColor','Primary brand','#123c69'], ['accentColor','Accent / buttons','#f2b84b'],
             ['headingColor','Headings','#123c69'],['textColor','Body text','#25313d'],

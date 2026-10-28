@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import PageRenderer from '../../components/PageRenderer';
+import { appearanceVariables } from '../../lib/appearance.mjs';
 
 const documentShell = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div id="preview-root"></div></body></html>';
 const widths = { desktop: 1280, tablet: 768, mobile: 390 };
@@ -52,12 +53,7 @@ export default function LivePagePreview({ page, settings = {}, menus = {}, devic
 
   useEffect(() => {
     if (!frameDocument) return;
-    const vars = {
-      '--primary': settings.primaryColor || '#123c69', '--accent': settings.accentColor || '#f2b84b',
-      '--heading-color': settings.headingColor || settings.primaryColor || '#123c69', '--text-color': settings.textColor || '#25313d',
-      '--page-background': settings.backgroundColor || '#fff', '--surface-color': settings.surfaceColor || '#fff',
-      '--link-color': settings.linkColor || settings.primaryColor || '#123c69', '--footer-background': settings.footerBackgroundColor || '#0b2239'
-    };
+    const vars = appearanceVariables(settings);
     for (const [key, value] of Object.entries(vars)) frameDocument.body.style.setProperty(key, value);
   }, [frameDocument, settings]);
 

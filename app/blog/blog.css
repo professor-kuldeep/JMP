@@ -1,11 +1,11 @@
-.jmp-blog .blog-heading { padding: 64px 0 70px; background: #f6f4ee; border-bottom: 1px solid var(--border); }
+.jmp-blog .blog-heading { padding: 64px 0 70px; background: var(--soft); border-bottom: 1px solid var(--border); }
 .jmp-blog .blog-heading h1 { font-size: clamp(43px, 5vw, 70px); }
 .jmp-blog .blog-heading p { color: var(--muted); font-size: 14px; margin: 0; max-width: 600px; }
 .jmp-blog .blog-body { padding-block: 40px 90px; }
 .jmp-blog .blog-filters { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 35px; }
-.jmp-blog .blog-filters a { display: inline-flex; align-items: center; min-height: 42px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 4px; color: var(--primary); font-size: 11px; transition: background .2s; }
-.jmp-blog .blog-filters a:hover { background: var(--soft); }
-.jmp-blog .blog-filters a.selected { background: var(--primary); border-color: var(--primary); color: white; }
+.jmp-blog .blog-filters a { display: inline-flex; align-items: center; min-height: 42px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 4px; color: var(--link-color); font-size: 11px; transition: background .2s; }
+.jmp-blog .blog-filters a:hover { background: var(--soft); color: var(--soft-link); }
+.jmp-blog .blog-filters a.selected { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
 .jmp-blog .blog-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .jmp-blog .blog-entry { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); background: var(--surface-color); border-radius: 5px; overflow: hidden; transition: transform .2s, box-shadow .2s; }
 .jmp-blog .blog-entry:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
