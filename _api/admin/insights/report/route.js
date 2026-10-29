@@ -1,9 +1,0 @@
-import {requirePermission} from '../../../../lib/auth';
-import {getSettings} from '../../../../lib/store';
-import {reportRange,summarizeVisits,trafficCsv} from '../../../../lib/traffic.mjs';
-import {readVisitEvents,clearVisitEvents} from '../../../../lib/insights-store';
-import {googleReports} from '../../../../lib/google-integration';
-import {insightsJson,insightsFailure} from '../../../../lib/insights-http';
-import {writeSecurityAudit} from '../../../../lib/security';
-export async function GET(request){try{await requirePermission(request,'analytics:read');const params=new URL(request.url).searchParams,range=reportRange({start:params.get('start'),end:params.get('end')}),settings=await getSettings();const stored=await readVisitEvents(range);const firstParty={...summarizeVisits(stored.events,range),status:stored.status,message:stored.message||'',truncated:stored.truncated,limit:stored.limit,enabled:settings.visitorTrackingEnabled!==false};if(params.get('format')==='csv')return new Response(trafficCsv(firstParty),{headers:{'Content-Type':'text/csv; charset=utf-8','Content-Disposition':'attachment; filename="website-visits.csv"','Cache-Control':'private, no-store'}});const google=await googleReports(settings,range,params.get('refresh')==='1');return insightsJson({range,firstParty,...google,generatedAt:new Date().toISOString()});}catch(error){return insightsFailure(error);}}
-export async function DELETE(request){try{const session=await requirePermission(request,'analytics:manage',{csrf:true});if((await request.json()).confirm!==true)return insightsJson({message:'Confirm deletion of the built-in visitor history.'},400);await clearVisitEvents();await writeSecurityAudit(request,session,'visitor_history_cleared','analytics');return insightsJson({success:true});}catch(error){return insightsFailure(error);}}
