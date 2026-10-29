@@ -1,0 +1,28 @@
+name: Website maintenance
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+jobs:
+  maintenance:
+    if: vars.SITE_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run protected maintenance endpoint
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          node --input-type=module <<'JS'
+          if (!process.env.CRON_SECRET || process.env.CRON_SECRET.length < 32) throw new Error('Configure the CRON_SECRET repository secret.');
+          const url = new URL('/api/maintenance', process.env.SITE_URL);
+          if (url.protocol !== 'https:') throw new Error('SITE_URL must use HTTPS.');
+          const response = await fetch(url, { headers: { Authorization: 'Bearer ' + process.env.CRON_SECRET }, signal: AbortSignal.timeout(65000), redirect: 'error' });
+          if (!response.ok) throw new Error('Maintenance returned HTTP ' + response.status);
+          const result = await response.json();
+          if (result.errors?.length) throw new Error('Maintenance needs attention: ' + result.errors.join(', '));
+          console.log(result.busy ? 'Another maintenance worker is active.' : 'Maintenance completed.');
+          JS

@@ -1,0 +1,1 @@
+export async function onRequestError(){if(process.env.NEXT_RUNTIME==='nodejs'){const {recordOperation}=await import('./app/lib/monitoring');await recordOperation('server','UNHANDLED_REQUEST_ERROR');}}

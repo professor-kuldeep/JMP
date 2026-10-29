@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+*.log
+.DS_Store
+data/local-store.json
+
+data/visitor-events.json
+data/google-connection.json
+data/*.tmp
+
+data/operations-events.json

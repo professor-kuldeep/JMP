@@ -1,0 +1,388 @@
+[
+  {
+    "path": "/admin/account/password",
+    "file": "admin/account/password/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "c3157d3d3b21e0b76738603e9799add2c5b49cd87891030249c20b4527f93a52"
+  },
+  {
+    "path": "/admin/account/recovery",
+    "file": "admin/account/recovery/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "651ef3a4e53a32fe8f8096eb56c49a12cbe55ac806cac6c922a5f44fa5a7d684"
+  },
+  {
+    "path": "/admin/backup",
+    "file": "admin/backup/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "83ef105a6d279cdb1b8d016c832db571e055b894529292b6c42f0ec6a6f82fc2"
+  },
+  {
+    "path": "/admin/bookings",
+    "file": "admin/bookings/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "0b407489fbd183461b44013ffec0b86a36d88b89f7b05cade6faaf7d606bd222"
+  },
+  {
+    "path": "/admin/content-upgrade",
+    "file": "admin/content-upgrade/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "c2ca9f91ac54ef73a46cbae44b025943bb9fdcefbb8cf110faef3b75095bfe84"
+  },
+  {
+    "path": "/admin/enquiries/:id",
+    "file": "admin/enquiries/[id]/route.js",
+    "methods": [
+      "GET",
+      "PUT",
+      "DELETE"
+    ],
+    "legacySha256": "66f1d6a76507b7441f81009afb4f236569adfa2ce6ef09e9283e785a9a6e0537"
+  },
+  {
+    "path": "/admin/enquiries/export",
+    "file": "admin/enquiries/export/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "057454981b7298271e76b41e8549ee7957702f9fb19c4cb521107d8319c05443"
+  },
+  {
+    "path": "/admin/enquiries",
+    "file": "admin/enquiries/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "2d9722e9a40f61e6ec37880b8113d78ad5deccdbbeedb45f1e903e9e130bcd32"
+  },
+  {
+    "path": "/admin/insights/config",
+    "file": "admin/insights/config/route.js",
+    "methods": [
+      "GET",
+      "PUT"
+    ],
+    "legacySha256": "f6376aa6d4a993f83a97ad4e3c0bc2c1f6a0b2c9935747560d1e0d7fc7404419"
+  },
+  {
+    "path": "/admin/insights/google/callback",
+    "file": "admin/insights/google/callback/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "4037ace4b44a12397d643fcf3571aa51c26f1861ae4e9c6e6716eabb875778be"
+  },
+  {
+    "path": "/admin/insights/google/complete",
+    "file": "admin/insights/google/complete/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "2e44781fb080180f21739e5adf86112c50c74f3653a49bdfed2b8a38cbef0fc0"
+  },
+  {
+    "path": "/admin/insights/google/connect",
+    "file": "admin/insights/google/connect/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "b1003315bd1232b81fa417b67c14bb9ce56ab5814e472cb24c101c0fa4b077c4"
+  },
+  {
+    "path": "/admin/insights/google/disconnect",
+    "file": "admin/insights/google/disconnect/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "a40b1b74d26da98bf13056b277ee51172450431b3df804509c7a263fb288cbde"
+  },
+  {
+    "path": "/admin/insights/google/sites",
+    "file": "admin/insights/google/sites/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "f1c300d4ed105de8217ddc258c937c0b89389db83ce2125ff1cb1420000e1e14"
+  },
+  {
+    "path": "/admin/insights/report",
+    "file": "admin/insights/report/route.js",
+    "methods": [
+      "GET",
+      "DELETE"
+    ],
+    "legacySha256": "446b212cb2fc2f4c680ee8b0d92d05c707cab2c874e53344bc664b46b238ecb7"
+  },
+  {
+    "path": "/admin/login",
+    "file": "admin/login/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "b84e9153316763f878dedadb805445e372664aeee0c1b4087fd3bc6adc34b8f8"
+  },
+  {
+    "path": "/admin/logout",
+    "file": "admin/logout/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "a5f9a067574c7e61567f6116809906debb69b211c9d86a17df322c49efeafccd"
+  },
+  {
+    "path": "/admin/me",
+    "file": "admin/me/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "adceb2992016a7492d72138c8543255898f068285008746da60b34966c107e49"
+  },
+  {
+    "path": "/admin/media/:id",
+    "file": "admin/media/[id]/route.js",
+    "methods": [
+      "PUT",
+      "DELETE"
+    ],
+    "legacySha256": "9c0e0e3ee03d130063c9c304ae4f7b847434be3682a8319641f386486681d239"
+  },
+  {
+    "path": "/admin/media",
+    "file": "admin/media/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "d37d4b30037b3b9e49f13f6f07f642892900b821f9f4118dbd3fa2dc91f7f998"
+  },
+  {
+    "path": "/admin/operations/backups",
+    "file": "admin/operations/backups/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "3e3deb59bcb4703d7081b096b8db233aa4a0960d3fc4762c67ec885b71743fb9"
+  },
+  {
+    "path": "/admin/operations",
+    "file": "admin/operations/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "07a0374507472b649ea7c14936b33ac19bc8d3178b531874f171070219fc57f2"
+  },
+  {
+    "path": "/admin/pages/:id/revisions",
+    "file": "admin/pages/[id]/revisions/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "5570d504de6b930bd911bd5aa0b6c14461849e76f4793f8b2a5f2f96e6dbbd93"
+  },
+  {
+    "path": "/admin/pages/:id",
+    "file": "admin/pages/[id]/route.js",
+    "methods": [
+      "PUT",
+      "DELETE"
+    ],
+    "legacySha256": "c76f7fc23305d5f1690b7202089397bc17340e3699f7f7154ab8916e97b14f75"
+  },
+  {
+    "path": "/admin/pages",
+    "file": "admin/pages/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "860044329d82c7605ce36183532a6b20def473eb8fd3d5470f65681dedae5547"
+  },
+  {
+    "path": "/admin/security/audit/export",
+    "file": "admin/security/audit/export/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "575fbe696dc8d5d437713311056e80736a71167d7cd58cd82d296ef5a03e73b7"
+  },
+  {
+    "path": "/admin/security/audit",
+    "file": "admin/security/audit/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "f4f823254aaee3daf9ff6f7509771fccd4810e7c146dfa3242d134d15a1e085d"
+  },
+  {
+    "path": "/admin/security/logout-all",
+    "file": "admin/security/logout-all/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "71ed71229c0427e5ff252e8aca82605536d044a8e70138360b3419afab24f056"
+  },
+  {
+    "path": "/admin/security/sessions",
+    "file": "admin/security/sessions/route.js",
+    "methods": [
+      "GET",
+      "DELETE"
+    ],
+    "legacySha256": "7e5cffe3d1ff3016682d7e3ed5e50754211cdc3aaa5ea88b688035b19aa0f093"
+  },
+  {
+    "path": "/admin/security/status",
+    "file": "admin/security/status/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "995870347c8526826f29b68a3eb62419f75d52477d78f36c4c167240bd573917"
+  },
+  {
+    "path": "/admin/settings",
+    "file": "admin/settings/route.js",
+    "methods": [
+      "GET",
+      "PUT"
+    ],
+    "legacySha256": "e7107a4474dace5005bf9b5a82835dc7468704cf5d5e50194fd624deafefc269"
+  },
+  {
+    "path": "/admin/status",
+    "file": "admin/status/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "d61cfd8044e9d032083ac7f6d98958203c39190c7c8a1bb133a56dc6d3908f7d"
+  },
+  {
+    "path": "/admin/users/:id/recovery",
+    "file": "admin/users/[id]/recovery/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "6fd7301e83b6ba3ebe481713a2ceff0906ff0476af3bf11e123bc08af8b29499"
+  },
+  {
+    "path": "/admin/users/:id",
+    "file": "admin/users/[id]/route.js",
+    "methods": [
+      "PUT",
+      "DELETE"
+    ],
+    "legacySha256": "cd4787f9e4d047303d36c7f289875e3afff4dc35b6f9a2edaf6d6ec353deec90"
+  },
+  {
+    "path": "/admin/users/:id/two-factor",
+    "file": "admin/users/[id]/two-factor/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "a7f05ab3d56a641c09c0502b872adaefaffff261f918a6f2785b00944c54a76f"
+  },
+  {
+    "path": "/admin/users",
+    "file": "admin/users/route.js",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "legacySha256": "a0fb3b2df0ef4ff001b7bb658747372fd2584e49cbbf471f1b0062a48d7063ee"
+  },
+  {
+    "path": "/analytics/collect",
+    "file": "analytics/collect/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "ae25c240e15130d9ed07c66c7b997a2e0635c5111460fa3bc8e60423ab002c77"
+  },
+  {
+    "path": "/auth/recovery/complete",
+    "file": "auth/recovery/complete/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "ffa68ec7b4a9903856cc45d991924ab5d4ca27dd3ea5321b384ac8f7b5f12500"
+  },
+  {
+    "path": "/auth/recovery",
+    "file": "auth/recovery/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "fe4438be76a71313c870536a10d6b9862640f7817bc5e8fafa95b76a203e354f"
+  },
+  {
+    "path": "/auth/request-password-reset",
+    "file": "auth/request-password-reset/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "8262231dd77d16a47d4f192ade201d724bce164d6505f15bd56287eae68a2997"
+  },
+  {
+    "path": "/booking/availability",
+    "file": "booking/availability/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "4babb2c596c5c3e10ff0ea08bbe6ff429ba54ba78e1e0df109d57465144c950d"
+  },
+  {
+    "path": "/booking/manage",
+    "file": "booking/manage/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "ed23fb10307c2e39eba9be549c4f004417320272161076b4d01cdc2eb455cc4f"
+  },
+  {
+    "path": "/booking",
+    "file": "booking/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "e6fb3c8914fe90b49bfce3ff5ad9d7dd647e29c82855cd1f4accbe23fc5b8287"
+  },
+  {
+    "path": "/contact",
+    "file": "contact/route.js",
+    "methods": [
+      "POST"
+    ],
+    "legacySha256": "7c6e12b70b531d08e12a612301f968bee04ab56f85ff1c01978710582fd8c3a4"
+  },
+  {
+    "path": "/health",
+    "file": "health/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "7d907b710f9991ddf235a82d2569fb23359f0e11351bbb852e0b706d3ca8adfe"
+  },
+  {
+    "path": "/maintenance",
+    "file": "maintenance/route.js",
+    "methods": [
+      "GET"
+    ],
+    "legacySha256": "225f74a2c9e0a4a1125d140b74ceb41d7478c4b44b8d65380aeba5f74be860a0"
+  }
+]

@@ -1,0 +1,24 @@
+# Production Checklist - v6 Supabase Edition
+
+- [ ] Supabase project created with MFA enabled
+- [ ] `supabase/schema.sql` executed successfully
+- [ ] `/api/health` reports `supabase-postgres`
+- [ ] Supabase Auth is configured
+- [ ] `ADMIN_SECRET` is 32+ random characters
+- [ ] Super Admin bootstrapped locally
+- [ ] Authenticator/TOTP tested
+- [ ] Recovery codes saved offline
+- [ ] Contact form creates an enquiry
+- [ ] Enquiry status and notes work
+- [ ] Page draft/publish works
+- [ ] Page revision restore tested
+- [ ] Supabase Storage upload works
+- [ ] Media deletion protection tested
+- [ ] Additional admins use individual accounts
+- [ ] Temporary-password change tested
+- [ ] Active session revocation tested
+- [ ] Turnstile enabled for production (recommended)
+- [ ] Security alert webhook configured (optional)
+- [ ] Vercel/Git/Supabase/domain accounts protected by MFA
+- [ ] Final CMS backup exported before launch
+- [ ] Custom domain connected only after staging tests pass

@@ -1,0 +1,34 @@
+{
+  "version": "9.0.1",
+  "date": "2026-10-29",
+  "automated_tests": {
+    "total": 112,
+    "passed": 112,
+    "failed": 0
+  },
+  "production_build": "passed (Next.js 16.3.3)",
+  "http_smoke": "passed: public pages, all protected API methods, route precedence, HEAD/OPTIONS, OAuth failure redirects, footer asset and image optimization",
+  "database_checks": "PostgreSQL engine (PGlite), migrations and transactional behavior",
+  "component_checks": "React/jsdom interaction tests; hero caption, footer logo, analytics consent copy and legacy service-finder fallback",
+  "api_routing": {
+    "implementation_modules": 46,
+    "public_api_entrypoints": 1,
+    "conservative_app_router_entries": 12,
+    "legacy_route_compatibility_guard": "passed"
+  },
+  "vercel_packaging": {
+    "builder": "@vercel/next 27.0.1",
+    "unique_bundled_functions": 3,
+    "aliased_function_paths": 22,
+    "function_limit": 12,
+    "within_limit": true
+  },
+  "browser_qa": "Full browser layout QA has not been completed in this workspace.",
+  "production_deployment": "Not redeployed from this workspace.",
+  "live_providers": "No production Supabase, Calendar, email, Google reporting or scheduler calls were exercised.",
+  "setup": [
+    "VERCEL-HOBBY-FIX.md",
+    "SCREENSHOT-FIXES.md",
+    "EXPERIENCE-UPGRADE.md"
+  ]
+}

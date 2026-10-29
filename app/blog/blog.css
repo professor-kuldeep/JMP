@@ -1,0 +1,40 @@
+.jmp-blog .blog-heading { padding: 64px 0 70px; background: var(--soft); border-bottom: 1px solid var(--border); }
+.jmp-blog .blog-heading h1 { font-size: clamp(43px, 5vw, 70px); }
+.jmp-blog .blog-heading p { color: var(--muted); font-size: 14px; margin: 0; max-width: 600px; }
+.jmp-blog .blog-body { padding-block: 40px 90px; }
+.jmp-blog .blog-filters { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 35px; }
+.jmp-blog .blog-filters a { display: inline-flex; align-items: center; min-height: 42px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 4px; color: var(--link-color); font-size: 11px; transition: background .2s; }
+.jmp-blog .blog-filters a:hover { background: var(--soft); color: var(--soft-link); }
+.jmp-blog .blog-filters a.selected { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.jmp-blog .blog-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.jmp-blog .blog-entry { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); background: var(--surface-color); border-radius: 5px; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+.jmp-blog .blog-entry:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+.jmp-blog .blog-image { display: block; aspect-ratio: 1.6; background: var(--soft); overflow: hidden; }
+.jmp-blog .blog-image img { width: 100%; height: 100%; object-fit: cover; }
+.jmp-blog .blog-entry-inner { padding: 27px; display: flex; flex-direction: column; flex: 1; }
+.jmp-blog .blog-byline { display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; color: var(--muted); font-size: 9px; margin-bottom: 18px; }
+.jmp-blog .blog-byline span { color: #92703d; text-transform: uppercase; letter-spacing: .08em; }
+.jmp-blog .blog-entry h2 { font-size: 31px; }
+.jmp-blog .blog-entry p { color: var(--muted); font-size: 12px; line-height: 1.85; }
+.jmp-blog .blog-entry-foot { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 20px; margin-top: auto; font-size: 10px; }
+.jmp-blog .blog-entry-foot span { color: var(--muted); }
+.jmp-blog .blog-entry-foot a { font-weight: 600; }
+.jmp-blog .blog-empty { padding: 65px 25px; text-align: center; border: 1px dashed #c5cdd3; background: var(--soft); color: var(--muted); border-radius: 5px; font-size: 13px; }
+@media (max-width: 1000px) { .jmp-blog .blog-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .jmp-blog .blog-cards { grid-template-columns: minmax(0, 1fr); } .jmp-blog .blog-heading { padding-block: 40px; } .jmp-blog .blog-heading p { font-size: 12px; } .jmp-blog .blog-body { padding-block: 27px 55px; } }
+.jmp-blog .blog-search { max-width: 620px; margin-bottom: 25px; }
+.jmp-blog .blog-search label { color: var(--muted); font-size: 12px; }
+.jmp-blog .blog-search > div { display: flex; gap: 10px; }
+.jmp-blog .blog-search input { min-width: 0; }
+.jmp-blog .blog-search .btn { min-height: 46px; }
+.jmp-blog .blog-results { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; color: var(--muted); font-size: 12px; margin: 0 0 27px; }
+.jmp-blog .blog-results a { text-decoration: underline; }
+.jmp-blog .blog-pagination { display: flex; align-items: center; justify-content: center; gap: 24px; padding-top: 35px; font-size: 12px; }
+.jmp-blog .blog-pagination a { padding: 9px 12px; border: 1px solid var(--border); border-radius: 4px; }
+.related-articles { background: var(--soft); }
+.related-article-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.related-article { display: flex; flex-direction: column; min-width: 0; padding: 26px; background: var(--surface-color); border: 1px solid var(--border); border-radius: 5px; }
+.related-article h3 { font-size: 29px; }
+.related-article p { color: var(--muted); font-size: 12px; }
+.related-article > a:last-child { font-size: 11px; margin-top: auto; }
+@media(max-width:800px) { .related-article-grid { grid-template-columns: minmax(0,1fr); } }
