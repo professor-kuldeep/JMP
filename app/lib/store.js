@@ -4,6 +4,8 @@ import { isPublicPage } from './publishing.mjs';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabaseAdmin, getSupabaseStatus } from './supabase';
+import { localMutate } from './runtime-store';
+import { invalidatePublicContent } from './public-cache';
 
 const localFile = path.join(process.cwd(), 'data', 'local-store.json');
 const seedFile = path.join(process.cwd(), 'data', 'seed.json');
@@ -13,7 +15,7 @@ function normalizeData(data = {}) {
   return {
     settings: data.settings || {}, menus: data.menus || { header: [], footer: [] }, pages: Array.isArray(data.pages) ? data.pages : [],
     enquiries: Array.isArray(data.enquiries) ? data.enquiries : [], media: Array.isArray(data.media) ? data.media : [],
-    revisions: data.revisions && typeof data.revisions === 'object' ? data.revisions : {}, updatedAt: data.updatedAt || null
+    revisions: data.revisions && typeof data.revisions === 'object' ? data.revisions : {}, jobs: data.jobs || [], bookings: data.bookings || [], updatedAt: data.updatedAt || null
   };
 }
 async function getSeed() { return normalizeData(JSON.parse(await fs.readFile(seedFile, 'utf8'))); }
@@ -55,9 +57,8 @@ async function dbRead(name) {
     return (data || []).map((row) => ({ ...(row.data || {}), id: Number(row.id), slug: row.slug, status: row.status, order: row.order_num, createdAt: row.data?.createdAt || row.created_at, updatedAt: row.updated_at }));
   }
   if (name === 'enquiries') {
-    const { data, error } = await db.from('cms_enquiries').select('id,data,created_at,updated_at').order('id', { ascending: false });
-    if (error) throw error;
-    return (data || []).map((row) => ({ ...(row.data || {}), id: Number(row.id), createdAt: row.data?.createdAt || row.created_at, updatedAt: row.updated_at || row.data?.updatedAt }));
+    const rows=[];for(let offset=0;;offset+=1000){const {data,error}=await db.from('cms_enquiries').select('id,data,created_at,updated_at').order('id',{ascending:false}).range(offset,offset+999);if(error)throw error;rows.push(...(data||[]));if(!data||data.length<1000)break;}
+    return rows.map(row=>({...row.data,id:Number(row.id),createdAt:row.data?.createdAt||row.created_at,updatedAt:row.updated_at}));
   }
   if (name === 'media') {
     const { data, error } = await db.from('cms_media').select('id,data,created_at,updated_at').order('id', { ascending: false });
@@ -132,7 +133,7 @@ async function readCollection(name) {
 }
 async function writeCollection(name, value) {
   if (supabaseAdmin()) return dbWrite(name, value);
-  if (!isProduction()) { const data = await readLocal(); data[name] = value; data.updatedAt = new Date().toISOString(); await writeLocal(data); return value; }
+  if (!isProduction()) return localMutate('local-store.json',await getSeed(),data=>{data[name]=value;data.updatedAt=new Date().toISOString();return value;});
   throw Object.assign(new Error('Persistent storage is not configured. Connect Supabase, run the included SQL schema, and redeploy.'), { code: 'STORAGE_NOT_CONFIGURED', status: 503 });
 }
 
@@ -151,9 +152,9 @@ export const getPages = cache(async () => (await readCollection('pages')) || [])
 export async function getEnquiries() { return (await readCollection('enquiries')) || []; }
 export async function getMedia() { return (await readCollection('media')) || []; }
 export async function getRevisions() { return (await readCollection('revisions')) || {}; }
-export async function saveSettings(value) { return writeCollection('settings', value || {}); }
-export async function saveMenus(value) { return writeCollection('menus', value || { header: [], footer: [] }); }
-export async function savePages(value) { return writeCollection('pages', Array.isArray(value) ? value : []); }
+export async function saveSettings(value) { const result = await writeCollection('settings', value || {}); invalidatePublicContent(); return result; }
+export async function saveMenus(value) { const result = await writeCollection('menus', value || { header: [], footer: [] }); invalidatePublicContent(); return result; }
+export async function savePages(value) { const result = await writeCollection('pages', Array.isArray(value) ? value : []); invalidatePublicContent(); return result; }
 export async function saveEnquiries(value) { return writeCollection('enquiries', Array.isArray(value) ? value : []); }
 export async function saveMedia(value) { return writeCollection('media', Array.isArray(value) ? value : []); }
 export async function saveRevisions(value) { return writeCollection('revisions', value && typeof value === 'object' ? value : {}); }

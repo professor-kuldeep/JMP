@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { normalizedMenus } from '../lib/experience.mjs';
 import { usePathname } from 'next/navigation';
 import Icon from './Icon';
 import FormattedText from './FormattedText';
@@ -8,7 +9,8 @@ import FormattedText from './FormattedText';
 export default function Footer({ settings = {}, menus, preview = false }) {
   const pathname = usePathname();
   if (!preview && (pathname.startsWith('/admin') || pathname.startsWith('/reset-password'))) return null;
-  const footer = menus?.footer || menus?.header || [];
+  const navigation = normalizedMenus(menus);
+  const footer = navigation.footer || navigation.header || [];
   // The bundled legacy footer bitmap is cropped; use the complete brand asset.
   const footerLogo = !settings.footerLogo || /^\/assets\/img\/footer-logo\.(png|webp)$/.test(settings.footerLogo)
     ? settings.logo || '/assets/img/jm-logo.webp' : settings.footerLogo;
@@ -28,6 +30,6 @@ export default function Footer({ settings = {}, menus, preview = false }) {
         {settings.address && <p><Icon name="pin" size={18}/><span>{settings.address}</span></p>}
       </div>
     </div>
-    <div className="footer-bottom"><div className="container"><span>© {new Date().getFullYear()} {settings.siteName || 'J M Pabari & Associates'}. All rights reserved.</span><div>{settings.analyticsEnabled && !preview && <button type="button" className="analytics-preferences" onClick={()=>window.dispatchEvent(new Event('jmp-analytics-preferences'))}>Analytics preferences</button>}<Link href="/privacy-policy">Privacy Policy</Link><Link href="/terms-conditions">Terms &amp; Conditions</Link></div></div></div>
+    <div className="footer-bottom"><div className="container"><span>© {new Date().getFullYear()} {settings.siteName || 'J M Pabari & Associates'}. All rights reserved.</span><div>{(settings.analyticsEnabled || settings.visitorTrackingEnabled !== false) && !preview && <button type="button" className="analytics-preferences" onClick={()=>window.dispatchEvent(new Event('jmp-analytics-preferences'))}>Analytics preferences</button>}<Link href="/privacy-policy">Privacy Policy</Link><Link href="/terms-conditions">Terms &amp; Conditions</Link></div></div></div>
   </footer>;
 }

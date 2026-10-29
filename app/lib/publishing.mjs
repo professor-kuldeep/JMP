@@ -15,6 +15,9 @@ export function normalizePublication(payload) {
   return {...payload, publishAt: date.toISOString()};
 }
 export function isEnquiryOverdue(item, hours = 48, now = Date.now()) {
+  if(['closed','client'].includes(item?.status))return false;
+  if(item?.followUpCompletedAt&&!item?.followUpAt)return false;
+  if(item?.followUpAt){const followUp=Date.parse(item.followUpAt);return Number.isFinite(followUp)&&followUp<=now;}
   const date = Date.parse(item?.createdAt);
-  return Number.isFinite(date) && ['new','in-progress'].includes(item.status || 'new') && now - date >= hours * 3600000;
+  return Number.isFinite(date) && ['new','in-progress','consultation'].includes(item.status || 'new') && now - date >= hours * 3600000;
 }

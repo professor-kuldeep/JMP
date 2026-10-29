@@ -14,7 +14,7 @@ const ROLE_PERMISSIONS = {
     'media:read','media:write','media:delete',
     'enquiries:read','enquiries:write','enquiries:delete','enquiries:export',
     'menus:read','menus:write','forms:read','forms:write','appearance:read','appearance:write','settings:read','settings:write',
-    'backup:export','security:read'
+    'backup:export','security:read','analytics:read','analytics:manage','operations:read','operations:manage','booking:read','booking:manage'
   ],
   editor: [
     'dashboard:read','pages:read','pages:write','pages:publish','pages:restore',
@@ -22,7 +22,7 @@ const ROLE_PERMISSIONS = {
   ],
   marketing: [
     'dashboard:read','pages:read','pages:write','pages:publish','pages:restore',
-    'media:read','media:write','forms:read','forms:write','appearance:read','settings:read'
+    'media:read','media:write','forms:read','forms:write','appearance:read','settings:read','analytics:read'
   ],
   viewer: ['dashboard:read','enquiries:read','enquiries:write','enquiries:export']
 };

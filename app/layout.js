@@ -1,12 +1,14 @@
 import './globals.css';
+import './experience.css';
 import './components/formatted-text.css';
 import { Cormorant_Garamond, Poppins } from 'next/font/google';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import QuickContact from './components/QuickContact';
 import PublicAnalytics from './components/PublicAnalytics';
 import { siteOrigin } from './lib/seo.mjs';
 import PublicCustomCSS from './components/PublicCustomCSS';
-import { getMenus, getSettings } from './lib/store';
+import { getMenus, getSettings } from './lib/public-store';
 import { appearanceVariables } from './lib/appearance.mjs';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-poppins' });
@@ -29,11 +31,12 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${poppins.variable} ${cormorant.variable}`}>
       <body style={appearanceVariables(settings)}>
-        <PublicAnalytics measurementId={settings.gaMeasurementId || ''} enabled={Boolean(settings.analyticsEnabled)}/>
+        <PublicAnalytics measurementId={settings.gaMeasurementId || ''} enabled={Boolean(settings.analyticsEnabled)} visitorEnabled={settings.visitorTrackingEnabled !== false}/>
         <PublicCustomCSS css={settings.customCss || ''}/>
         <Header settings={settings} menus={menus} />
         {children}
         <Footer settings={settings} menus={menus} />
+        <QuickContact phone={settings.phone || ''}/>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { normalizedMenus } from '../lib/experience.mjs';
 import Icon from './Icon';
 
 export default function Header({ settings = {}, menus, preview = false }) {
@@ -12,7 +13,7 @@ export default function Header({ settings = {}, menus, preview = false }) {
   const root = useRef(null);
   const toggle = useRef(null);
   const hidden = !preview && (pathname.startsWith('/admin') || pathname.startsWith('/reset-password'));
-  const header = menus?.header || [];
+  const header = normalizedMenus(menus).header || [];
   const isActive = (url) => url && (url === '/' ? pathname === '/' : pathname === url.split('#')[0]);
 
   function close() { setOpen(false); setExpanded(null); }
@@ -39,6 +40,8 @@ export default function Header({ settings = {}, menus, preview = false }) {
     };
   }, []);
 
+  useEffect(()=>{const el=root.current;if(!el)return;const doc=el.ownerDocument,measure=()=>doc.documentElement.style.setProperty('--site-header-height',Math.ceil(el.getBoundingClientRect().height)+'px');const observer=new ResizeObserver(measure);observer.observe(el);measure();return()=>observer.disconnect();},[hidden]);
+
   if (hidden) return null;
 
   return <>
@@ -56,6 +59,7 @@ export default function Header({ settings = {}, menus, preview = false }) {
           <Icon name={open ? 'close' : 'menu'}/>
         </button>
         <nav id="primary-navigation" className={`nav ${open ? 'open' : ''}`} aria-label="Primary navigation">
+          <Link className="nav-search-link" href="/resources#resource-library" onClick={close} aria-label="Search resources"><Icon name="document" size={16}/><span>Find a resource</span></Link>
           {header.map((item, index) => item.children?.length ? (
             <div className={`nav-item dropdown ${expanded === index ? 'expanded' : ''}`} key={`${item.label}-${index}`}
               onPointerEnter={(event) => { if (event.pointerType === 'mouse' && (root.current?.ownerDocument.defaultView?.innerWidth || window.innerWidth) > 1100) setExpanded(index); }}
