@@ -20,7 +20,7 @@ export async function PUT(request, { params }) {
     }
     if (payload.status === 'published') await requirePermission(request, 'pages:publish');
     const slug = pages[index].slug === 'home' ? 'home' : cleanSlug(payload.slug || payload.title);
-    if (['blog','admin','api','robots.txt','sitemap.xml','reset-password'].includes(slug)) return NextResponse.json({ message: 'This URL slug is reserved. Choose another slug.' }, { status: 400 });
+    if (['book-consultation','booking','blog','admin','api','robots.txt','sitemap.xml','reset-password'].includes(slug)) return NextResponse.json({ message: 'This URL slug is reserved. Choose another slug.' }, { status: 400 });
     if (slug !== pages[index].slug && pages.some((page) => page.slug === slug)) return NextResponse.json({ message: 'A page with this slug already exists.' }, { status: 409 });
     const revisions = await getRevisions(); const key = String(pageId); const history = revisions[key] || [];
     revisions[key] = [{ id: crypto.randomUUID(), savedAt: new Date().toISOString(), savedBy: session.username, page: structuredClone(pages[index]) }, ...history].slice(0, 30);

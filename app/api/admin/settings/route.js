@@ -5,7 +5,11 @@ import { apiError } from '../../../lib/api-error';
 import { writeSecurityAudit } from '../../../lib/security';
 import { sanitizeCmsValue } from '../../../lib/validation';
 import { siteOrigin } from '../../../lib/seo.mjs';
+import {ANALYTICS_KEYS,validateAnalyticsSettings} from '../../../lib/traffic.mjs';
+import {clearGoogleCache} from '../../../lib/google-integration';
 import { hasPermission } from '../../../lib/permissions';
+import { BOOKING_KEYS,validateBookingSettings } from '../../../lib/booking.mjs';
+import { calendarEnvironment } from '../../../lib/calendar';
 
 const FORM_KEYS = new Set(['formHeading','formSuccessMessage','formServices','enquiryRetentionDays','notificationEmail','enquiryNotificationsEnabled','enquiryAcknowledgementEnabled','followUpHours']);
 const APPEARANCE_KEYS = new Set(['logo','footerLogo','primaryColor','accentColor','footerText','favicon','headingColor','textColor','backgroundColor','surfaceColor','linkColor','footerBackgroundColor','customCss']);
@@ -40,7 +44,7 @@ export async function PUT(request) {
     const keys = changedKeys(currentSettings, requestedSettings);
 
     for (const key of keys) {
-      const required = FORM_KEYS.has(key) ? 'forms:write' : APPEARANCE_KEYS.has(key) ? 'appearance:write' : 'settings:write';
+      const required = BOOKING_KEYS.includes(key) ? 'booking:manage' : ANALYTICS_KEYS.includes(key) ? 'analytics:manage' : FORM_KEYS.has(key) ? 'forms:write' : APPEARANCE_KEYS.has(key) ? 'appearance:write' : 'settings:write';
       if (!hasPermission(session.role, required)) return NextResponse.json({ message: `You do not have permission to change ${key}.` }, { status: 403 });
     }
 
@@ -50,6 +54,11 @@ export async function PUT(request) {
     if (requestedSettings.gaMeasurementId && !/^G-[A-Z0-9]{4,20}$/.test(requestedSettings.gaMeasurementId)) return NextResponse.json({message:'Enter a valid GA4 measurement ID (G-...).'}, {status:400});
     if (requestedSettings.notificationEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestedSettings.notificationEmail)) return NextResponse.json({message:'Enter a valid enquiry notification email.'},{status:400});
     if (requestedSettings.followUpHours != null && (!Number.isFinite(Number(requestedSettings.followUpHours)) || Number(requestedSettings.followUpHours) < 1 || Number(requestedSettings.followUpHours) > 720)) return NextResponse.json({message:'Follow-up reminders must be between 1 and 720 hours.'},{status:400});
+    try {validateAnalyticsSettings(requestedSettings);} catch(error) {return NextResponse.json({message:error.message},{status:400});}
+    if(keys.some(key=>ANALYTICS_KEYS.includes(key)))clearGoogleCache();
+    try { validateBookingSettings(requestedSettings); } catch(error) { return NextResponse.json({message:error.message},{status:400}); }
+    if(requestedSettings.bookingEnabled && !calendarEnvironment().configured) return NextResponse.json({message:'Connect the team calendar in the hosting environment before enabling online booking.'},{status:400});
+    if(requestedSettings.enquiryRetentionDays!=null&&(!Number.isInteger(Number(requestedSettings.enquiryRetentionDays))||Number(requestedSettings.enquiryRetentionDays)<30||Number(requestedSettings.enquiryRetentionDays)>3650))return NextResponse.json({message:'Enquiry retention must be between 30 and 3650 days.'},{status:400});
     // Never trust CSS or theme values supplied by a browser client.
     const colorKeys = ['primaryColor','accentColor','headingColor','textColor','backgroundColor','surfaceColor','linkColor','footerBackgroundColor'];
     for (const key of colorKeys) {

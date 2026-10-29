@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getSettings, listPages } from '../lib/store';
+import { getSettings, listPages } from '../lib/public-store';
 import { selectPosts, blogHref } from '../lib/blog.mjs';
 import { siteOrigin } from '../lib/seo.mjs';
 import ArticleCard from '../components/ArticleCard';

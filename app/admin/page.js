@@ -12,12 +12,16 @@ import Icon from '../components/Icon';
 import { isPublicPage, publicationLabel, isEnquiryOverdue } from '../lib/publishing.mjs';
 import SiteHealth from './components/SiteHealth';
 import { DeliverySettings, SiteExtensionsSettings } from './components/SiteExtensionsSettings';
+import TrafficDashboard from './components/TrafficDashboard';
+import CRMWorkspace from './components/CRMWorkspace';
+import OperationsWorkspace from './components/OperationsWorkspace';
+import { prepareMediaUpload } from '../lib/media-browser.mjs';
 import { DEFAULT_APPEARANCE } from '../lib/appearance.mjs';
 
 const emptyPage = {
   id: null, slug: '', title: '', seoTitle: '', metaDescription: '', ogTitle: '', ogDescription: '', ogImage: '', canonicalUrl: '', noIndex: false,
   status: 'draft', publishAt: '', template: 'default', order: 99, blogCategory: '', blogAuthor: '', blogDate: '', heroKicker: '', heroTitle: '', heroText: '', heroImage: '',
-  button1Text: 'Book a Consultation →', button1Url: '/contact', button2Text: '', button2Url: '', sections: [newSection('text')]
+  button1Text: 'Request a Consultation →', button1Url: '/contact', button2Text: '', button2Url: '', sections: [newSection('text')]
 };
 
 const pagePresets = {
@@ -75,6 +79,7 @@ function formatDate(value) {
 }
 
 export default function AdminPage() {
+  const [analyticsDirty,setAnalyticsDirty]=useState(false);
   const [session, setSession] = useState(null);
   const [checkingSession, setCheckingSession] = useState(true);
   const [csrfToken, setCsrfToken] = useState('');
@@ -86,11 +91,11 @@ export default function AdminPage() {
   const [settings, setSettings] = useState({});
   const [menus, setMenus] = useState({ header: [], footer: [] });
   const [enquiries, setEnquiries] = useState([]);
+  const [enquirySummary,setEnquirySummary]=useState({total:0,stages:{},overdue:0});
   const [media, setMedia] = useState([]);
   const [storage, setStorage] = useState(null);
   const [editing, setEditing] = useState(null);
   const [revisions, setRevisions] = useState([]);
-  const [search, setSearch] = useState('');
   const [pageSearch, setPageSearch] = useState('');
   const [saving, setSaving] = useState(false);
   const [previewDevice, setPreviewDevice] = useState('desktop');
@@ -112,12 +117,13 @@ export default function AdminPage() {
   const [savedConfigSignature, setSavedConfigSignature] = useState('');
   const pageDirty = Boolean(editing && JSON.stringify(editing) !== savedPageSignature);
   const configDirty = Boolean(savedConfigSignature && JSON.stringify({settings,menus}) !== savedConfigSignature);
-  const overdueEnquiries = enquiries.filter(item => isEnquiryOverdue(item, settings.followUpHours || 48));
+  const overdueCount = enquirySummary.overdue || 0;
 
   function navigateTab(next) {
     if (next === tab) return;
+    if(tab==='insights'&&analyticsDirty&&!window.confirm('Leave without saving analytics settings?'))return;
     if (tab === 'edit-page' && pageDirty && !window.confirm('Leave this page without saving to the website? Your browser draft is kept for recovery.')) return;
-    if (['settings','appearance','forms','menus'].includes(tab) && configDirty) {
+    if (['settings','appearance','forms','menus','operations'].includes(tab) && configDirty) {
       if (!window.confirm('Leave without saving these configuration changes?')) return;
       try { const previous = JSON.parse(savedConfigSignature); setSettings(previous.settings); setMenus(previous.menus); } catch {}
     }
@@ -126,11 +132,11 @@ export default function AdminPage() {
   }
   function localDateValue(value) { if (!value) return ''; const date = new Date(value); if (!Number.isFinite(date.getTime())) return ''; return new Date(date.getTime() - date.getTimezoneOffset()*60000).toISOString().slice(0,16); }
   useEffect(() => {
-    if (!pageDirty && !configDirty) return;
+    if (!pageDirty && !configDirty && !analyticsDirty) return;
     const guard = event => { event.preventDefault(); event.returnValue = ''; };
     window.addEventListener('beforeunload', guard);
     return () => window.removeEventListener('beforeunload', guard);
-  }, [pageDirty, configDirty]);
+  }, [pageDirty, configDirty, analyticsDirty]);
 
   function notify(text, type = 'success') {
     setMessage(text); setMessageType(type);
@@ -153,7 +159,7 @@ export default function AdminPage() {
   }
 
   async function checkSession() {
-    try { const data = await api('/api/admin/me'); setSession(data.user); setCsrfToken(data.csrfToken || ''); await loadAll(data.user); }
+    try { const data = await api('/api/admin/me'); setSession(data.user); setCsrfToken(data.csrfToken || ''); await loadAll(data.user); if(new URLSearchParams(window.location.search).has('insights')&&can('analytics:read',data.user))setTab('insights'); }
     catch { setSession(null); }
     finally { setCheckingSession(false); }
   }
@@ -164,7 +170,7 @@ export default function AdminPage() {
       const jobs = [];
       if (can('pages:read', user)) jobs.push(api('/api/admin/pages').then((d) => setPages(d.pages || []))); else setPages([]);
       if (can('settings:read', user) || can('menus:read', user) || can('forms:read', user) || can('appearance:read', user)) jobs.push(api('/api/admin/settings').then((d) => { setSettings(d.settings || {}); setMenus(d.menus || { header: [], footer: [] }); setSavedConfigSignature(JSON.stringify({settings:d.settings || {},menus:d.menus || {header:[],footer:[]}})); }));
-      if (can('enquiries:read', user)) jobs.push(api('/api/admin/enquiries').then((d) => setEnquiries(d.enquiries || []))); else setEnquiries([]);
+      if (can('enquiries:read', user)) jobs.push(api('/api/admin/enquiries?pageSize=5').then((d) => {setEnquiries(d.enquiries || []);setEnquirySummary(d.summary || {total:d.total || 0,stages:{}});})); else setEnquiries([]);
       if (can('media:read', user)) jobs.push(api('/api/admin/media').then((d) => setMedia(d.media || []))); else setMedia([]);
       if (can('security:read', user)) {
         jobs.push(api('/api/admin/security/status').then((d) => setSecurityStatus(d.security || null)));
@@ -201,7 +207,7 @@ export default function AdminPage() {
     finally { setSaving(false); }
   }
 
-  async function logout() { if ((pageDirty || configDirty) && !window.confirm('Sign out without saving your changes?')) return; setEditing(null); await api('/api/admin/logout', { method: 'POST' }); setSession(null); setCsrfToken(''); }
+  async function logout() { if ((pageDirty || configDirty || analyticsDirty) && !window.confirm('Sign out without saving your changes?')) return; setEditing(null); await api('/api/admin/logout', { method: 'POST' }); setSession(null); setCsrfToken(''); }
 
   async function logoutAllSessions() {
     if (!confirm('Sign out every active admin session, including this one?')) return;
@@ -340,24 +346,10 @@ export default function AdminPage() {
     finally { setSaving(false); }
   }
 
-  async function updateEnquiry(item, changes) {
-    try {
-      const data = await api(`/api/admin/enquiries/${item.id}`, { method: 'PUT', body: JSON.stringify(changes) });
-      setEnquiries((current) => current.map((entry) => String(entry.id) === String(item.id) ? data.enquiry : entry));
-      notify('Enquiry updated.');
-    } catch (error) { notify(error.message, 'error'); }
-  }
-
-  async function deleteEnquiry(id) {
-    if (!confirm('Delete this enquiry?')) return;
-    try { await api(`/api/admin/enquiries/${id}`, { method: 'DELETE' }); notify('Enquiry deleted.'); await loadAll(); }
-    catch (error) { notify(error.message, 'error'); }
-  }
-
   async function uploadMedia(event) {
     const file = event.target.files?.[0]; if (!file) return;
-    notify('Uploading media...', 'info'); const form = new FormData(); form.append('file', file);
-    try { const data = await api('/api/admin/media', { method: 'POST', body: form }); notify(`Uploaded: ${data.media?.name || file.name}`); await loadAll(); return data.media; }
+    notify('Preparing media...', 'info');
+    try { const prepared=await prepareMediaUpload(file),form=new FormData();form.append('file',prepared);const data = await api('/api/admin/media', { method: 'POST', body: form }); notify(`Uploaded: ${data.media?.name || file.name}`); await loadAll(); return data.media; }
     catch (error) { notify(error.message, 'error'); }
     finally { event.target.value = ''; }
   }
@@ -382,11 +374,6 @@ export default function AdminPage() {
   }
 
   async function copyText(value) { try { await navigator.clipboard.writeText(value); notify('Copied to clipboard.'); } catch { notify('Could not copy automatically.', 'error'); } }
-
-  const filteredEnquiries = useMemo(() => {
-    const q = search.toLowerCase();
-    return enquiries.filter((item) => (!q || JSON.stringify(item).toLowerCase().includes(q)) && (enquiryStatus === 'all' || enquiryStatus === 'overdue' && isEnquiryOverdue(item,settings.followUpHours || 48) || (item.status || 'new') === enquiryStatus));
-  }, [enquiries, search, enquiryStatus,settings.followUpHours]);
 
   const filteredPages = useMemo(() => {
     const q = pageSearch.toLowerCase();
@@ -422,6 +409,9 @@ export default function AdminPage() {
     ['blog','Blog','✎', 'pages:read'],
     ['media','Media','▧', 'media:read'],
     ['enquiries','Enquiries','✉', 'enquiries:read'],
+    ['followups','Follow-ups','✓','enquiries:read'],
+    ['insights','Traffic & Search','↗','analytics:read'],
+    ['operations','Operations & Booking','⚙','operations:read'],
     ['menus','Navigation','☰', 'menus:write'],
     ['forms','Forms','◫', 'forms:write'],
     ['appearance','Appearance','◐', 'appearance:write'],
@@ -430,23 +420,25 @@ export default function AdminPage() {
     ['users','Users','♙', 'super_admin'],
     ['security','Security','⌾', 'security:read'],
     ['account','My Account','●', 'account'],
-    ['backup','Backup','↺', 'backup:export'],
+    ['backup','Content Export','↺', 'backup:export'],
     ['help','Help','?', 'help']
   ].filter(([, , , permission]) => permission === 'help' || permission === 'account' || (permission === 'super_admin' ? session.role === 'super_admin' : can(permission)));
 
-  const navIcons = { 'site-health': 'chart', dashboard: 'home', pages: 'document', blog: 'edit', media: 'image', enquiries: 'mail', menus: 'menu', forms: 'briefcase', appearance: 'palette', settings: 'settings', users: 'people', security: 'shield', account: 'people', backup: 'refresh', help: 'help' };
+  const navIcons = { followups:'clock',operations:'settings',insights:'chart', 'site-health': 'chart', dashboard: 'home', pages: 'document', blog: 'edit', media: 'image', enquiries: 'mail', menus: 'menu', forms: 'briefcase', appearance: 'palette', settings: 'settings', users: 'people', security: 'shield', account: 'people', backup: 'refresh', help: 'help' };
   const displayName = session.displayName || session.username || 'Administrator';
   return <main id="main-content" className="admin-shell">
     <div className="admin-top"><div className="admin-brand"><span className="admin-brand-mark">JMP</span><div><strong>CoreTax CMS</strong><span className="admin-version">Website workspace</span></div></div><div className="admin-actions"><span className="admin-account-label"><span>{displayName.slice(0, 1).toUpperCase()}</span>{displayName}</span><a className="admin-btn light" href="/" target="_blank" rel="noreferrer">View website<Icon name="diagonal" size={14}/></a><button type="button" className="admin-btn light" onClick={() => loadAll()} aria-label="Refresh workspace"><Icon name="refresh" size={15}/></button><button className="admin-btn danger" onClick={logout}>Logout</button></div></div>
     <div className="admin-layout">
-      <aside className="admin-sidebar" aria-label="CMS navigation"><div className="admin-sidebar-heading"><span className="admin-sidebar-overline">WORKSPACE</span><strong>Manage your website</strong><small>Content, design & security</small></div><nav className="admin-nav" aria-label="Admin sections">{nav.map(([key,label,icon]) => <button type="button" key={key} title={label} aria-current={tab === key || (key === 'pages' && tab === 'edit-page') ? 'page' : undefined} className={tab === key || (key === 'pages' && tab === 'edit-page') ? 'active' : ''} onClick={() => navigateTab(key)}><span className="admin-nav-icon"><Icon name={navIcons[key]} size={18}/></span><span className="admin-nav-label">{label}</span>{key === 'enquiries' && enquiries.some(e => (e.status || 'new') === 'new') && <span className="admin-nav-count">{enquiries.filter(e => (e.status || 'new') === 'new').length}</span>}</button>)}</nav><div className="admin-sidebar-foot"><span className="admin-status-dot"/>CMS workspace <span className="admin-sidebar-foot-muted">· Secure access</span></div></aside>
+      <aside className="admin-sidebar" aria-label="CMS navigation"><div className="admin-sidebar-heading"><span className="admin-sidebar-overline">WORKSPACE</span><strong>Manage your website</strong><small>Content, design & security</small></div><nav className="admin-nav" aria-label="Admin sections">{nav.map(([key,label,icon]) => <button type="button" key={key} title={label} aria-current={tab === key || (key === 'pages' && tab === 'edit-page') ? 'page' : undefined} className={tab === key || (key === 'pages' && tab === 'edit-page') ? 'active' : ''} onClick={() => navigateTab(key)}><span className="admin-nav-icon"><Icon name={navIcons[key]} size={18}/></span><span className="admin-nav-label">{label}</span>{key === 'enquiries' && Boolean(enquirySummary.stages?.new) && <span className="admin-nav-count">{enquirySummary.stages?.new || 0}</span>}</button>)}</nav><div className="admin-sidebar-foot"><span className="admin-status-dot"/>CMS workspace <span className="admin-sidebar-foot-muted">· Secure access</span></div></aside>
       <section className="admin-main">
         {message && <div className={`admin-notice ${messageType}`}><strong role="status">{message}</strong><button aria-label="Dismiss notification" onClick={() => setMessage('')}>×</button></div>}
 
+        {tab === 'insights' && <TrafficDashboard api={api} canManage={can('analytics:manage')} onDirtyChange={setAnalyticsDirty} onSaved={()=>loadAll()}/>}
+
         {tab === 'dashboard' && <>
           <div className="admin-page-head dashboard-welcome"><div><span className="eyebrow">Your workspace at a glance</span><h2>Welcome back, {displayName.split(' ')[0]}.</h2><p className="small">A little clarity. A productive day. Everything you need is right here.</p></div><div className="admin-actions">{can('pages:write') && <><button className="admin-btn" onClick={() => editPage(null, 'blank')}>+ New Page</button><button className="admin-btn light" onClick={() => editPage(null, 'blog')}>+ New Blog</button></>}</div></div>
-          {overdueEnquiries.length > 0 && can('enquiries:read') && <div className="overdue-notice"><span><b>{overdueEnquiries.length} {overdueEnquiries.length === 1 ? 'enquiry needs' : 'enquiries need'} follow-up.</b> Open for more than {settings.followUpHours || 48} hours.</span><button type="button" className="admin-btn light" onClick={() => {setEnquiryStatus('overdue');setTab('enquiries');}}>Review follow-ups</button></div>}
-          <div className="admin-stats-grid">{can('pages:read') && <><StatCard label="Pages" value={pages.length} note={`${pages.filter(p => isPublicPage(p)).length} published`} onClick={() => setTab('pages')} /><StatCard label="Drafts" value={pages.filter(p => p.status === 'draft').length} note="Not visible publicly" onClick={() => setTab('pages')} /></>}{can('enquiries:read') && <StatCard label="New Enquiries" value={enquiries.filter(e => (e.status || 'new') === 'new').length} note={`${enquiries.length} total`} onClick={() => setTab('enquiries')} />}{can('media:read') && <StatCard label="Media" value={media.length} note="Images & files" onClick={() => setTab('media')} />}</div>
+          {overdueCount > 0 && can('enquiries:read') && <div className="overdue-notice"><span><b>{overdueCount} {overdueCount === 1 ? 'enquiry needs' : 'enquiries need'} follow-up.</b> Scheduled follow-ups and unanswered enquiries need attention.</span><button type="button" className="admin-btn light" onClick={() => {setEnquiryStatus('overdue');setTab('followups');}}>Review follow-ups</button></div>}
+          <div className="admin-stats-grid">{can('pages:read') && <><StatCard label="Pages" value={pages.length} note={`${pages.filter(p => isPublicPage(p)).length} published`} onClick={() => setTab('pages')} /><StatCard label="Drafts" value={pages.filter(p => p.status === 'draft').length} note="Not visible publicly" onClick={() => setTab('pages')} /></>}{can('enquiries:read') && <StatCard label="New Enquiries" value={enquirySummary.stages?.new || 0} note={`${enquirySummary.total || 0} total`} onClick={() => setTab('enquiries')} />}{can('media:read') && <StatCard label="Media" value={media.length} note="Images & files" onClick={() => setTab('media')} />}</div>
           {(can('pages:read') || can('enquiries:read')) && <div className="dashboard-grid">
             {can('pages:read') && <div className="admin-card"><div className="card-title-row"><h3>Recently Edited Pages</h3><button className="text-link" onClick={() => setTab('pages')}>View all</button></div>{recentPages.length ? <div className="simple-list">{recentPages.map((page) => <button key={page.id} onClick={() => editPage(page)}><span><b>{page.title}</b><small>{formatDate(page.updatedAt)}</small></span><em className={`pill ${publicationLabel(page)}`}>{publicationLabel(page)}</em></button>)}</div> : <EmptyPanel title="No pages yet" text="Create your first page to get started." />}</div>}
             {can('enquiries:read') && <div className="admin-card"><div className="card-title-row"><h3>Latest Enquiries</h3><button className="text-link" onClick={() => setTab('enquiries')}>View all</button></div>{latestEnquiries.length ? <div className="simple-list">{latestEnquiries.map((item) => <button key={item.id} onClick={() => setTab('enquiries')}><span><b>{item.name}</b><small>{item.service || item.email}</small></span><em className={`enquiry-badge ${item.status || 'new'}`}>{item.status || 'new'}</em></button>)}</div> : <EmptyPanel title="No enquiries yet" text="New contact-form submissions will appear here." />}</div>}
@@ -473,7 +465,7 @@ export default function AdminPage() {
 
               {editing.template === 'blog' && <details className="admin-card edit-panel" open><summary><div><b>Blog Details</b><span>Category, author, publication date and featured image</span></div></summary><div className="panel-body"><div className="admin-grid three"><Field label="Category" value={editing.blogCategory || ''} onChange={v=>setEditing({...editing,blogCategory:v})} placeholder="Tax Insights"/><Field label="Author" value={editing.blogAuthor || ''} onChange={v=>setEditing({...editing,blogAuthor:v})} placeholder="Editorial Team"/><Field label="Publication Date" type="date" value={editing.blogDate || ''} onChange={v=>setEditing({...editing,blogDate:v})}/></div><p className="small">Use the Hero Image below as the featured image on the public blog listing. Use Hero Description for the article excerpt. Only published posts appear publicly.</p></div></details>}
 
-              <details className="admin-card edit-panel" open><summary><div><b>2. Hero Section</b><span>The first section visitors see</span></div></summary><div className="panel-body"><div className="admin-grid"><Field label="Small Kicker" value={editing.heroKicker} onChange={(v) => setEditing({ ...editing, heroKicker: v })} /><Field label="Hero Heading" value={editing.heroTitle} onChange={(v) => setEditing({ ...editing, heroTitle: v })} /><Field label="Primary Button Text" value={editing.button1Text} onChange={(v) => setEditing({ ...editing, button1Text: v })} /><Field label="Primary Button URL" value={editing.button1Url} onChange={(v) => setEditing({ ...editing, button1Url: v })} /><Field label="Secondary Button Text" value={editing.button2Text} onChange={(v) => setEditing({ ...editing, button2Text: v })} /><Field label="Secondary Button URL" value={editing.button2Url} onChange={(v) => setEditing({ ...editing, button2Url: v })} /></div><Field label="Hero Description" textarea richText value={editing.heroText} onChange={(v) => setEditing({ ...editing, heroText: v })} /><MediaPicker label="Hero Image" value={editing.heroImage} onChange={(v) => setEditing({ ...editing, heroImage: v })} media={media} onUpload={uploadMedia} /></div></details>
+              <details className="admin-card edit-panel" open><summary><div><b>2. Hero Section</b><span>The first section visitors see</span></div></summary><div className="panel-body"><div className="admin-grid"><Field label="Small Kicker" value={editing.heroKicker} onChange={(v) => setEditing({ ...editing, heroKicker: v })} /><Field label="Hero Heading" value={editing.heroTitle} onChange={(v) => setEditing({ ...editing, heroTitle: v })} /><Field label="Primary Button Text" value={editing.button1Text} onChange={(v) => setEditing({ ...editing, button1Text: v })} /><Field label="Primary Button URL" value={editing.button1Url} onChange={(v) => setEditing({ ...editing, button1Url: v })} /><Field label="Secondary Button Text" value={editing.button2Text} onChange={(v) => setEditing({ ...editing, button2Text: v })} /><Field label="Secondary Button URL" value={editing.button2Url} onChange={(v) => setEditing({ ...editing, button2Url: v })} /></div><Field label="Hero Description" textarea richText value={editing.heroText} onChange={(v) => setEditing({ ...editing, heroText: v })} /><MediaPicker label="Hero Image" crop focalPoint={editing.heroFocalPoint} onFocalChange={v=>setEditing({...editing,heroFocalPoint:v})} alt={editing.heroAlt || ''} onAltChange={v=>setEditing({...editing,heroAlt:v})} value={editing.heroImage} onChange={(v) => setEditing({ ...editing, heroImage: v })} media={media} onUpload={uploadMedia} /></div></details>
 
               <div className="admin-card"><SectionBuilder sections={editing.sections || []} onChange={(sections) => setEditing({ ...editing, sections })} media={media} onUploadMedia={uploadMedia} /></div>
 
@@ -488,11 +480,12 @@ export default function AdminPage() {
 
         {tab === 'media' && <div className="admin-card"><div className="admin-page-head"><div><h2>Media Library</h2><p className="small">Upload, search and reuse images without copying URLs manually.</p></div>{can('media:write') && <label className="admin-btn file-button">+ Upload Media<input type="file" onChange={uploadMedia} /></label>}</div>{!blobReady && <div className="inline-warning">Supabase Storage is not connected. Configure Supabase and run the included schema before using production uploads.</div>}<div className="field search-field"><input placeholder="Search media..." value={mediaSearch} onChange={(e) => setMediaSearch(e.target.value)} /></div><div className="media-grid">{filteredMedia.map((item) => <div className="media-card" key={item.id}>{/\.(png|jpe?g|webp|gif|svg)(\?|$)/i.test(item.url || '') || (item.url || '').includes('blob.vercel-storage.com') ? <img src={item.url} alt={item.alt || item.name} /> : <div className="media-file-icon">FILE</div>}<strong title={item.name}>{item.name}</strong><input className="media-alt-input" placeholder="Alt text" defaultValue={item.alt || ''} onBlur={(e) => { if (e.target.value !== (item.alt || '')) updateMedia(item, { alt: e.target.value }); }} /><span className="small">{new Date(item.createdAt).toLocaleDateString()}</span><div className="admin-actions compact"><button className="admin-btn light" onClick={() => copyText(item.url)}>Copy URL</button><a className="admin-btn light" href={item.url} target="_blank" rel="noreferrer">Open</a>{can('media:delete') && <button className="admin-btn danger" onClick={() => deleteMedia(item.id)}>Delete</button>}</div></div>)}</div>{filteredMedia.length === 0 && <EmptyPanel title="No media found" text="Upload an image or try another search." />}</div>}
 
-        {tab === 'enquiries' && <div className="admin-card"><div className="admin-page-head"><div><h2>Enquiries</h2><p className="small">Track leads from new enquiry through follow-up and closure.</p></div><a className="admin-btn" href="/api/admin/enquiries/export">Export CSV</a></div><div className="filter-row"><div className="field search-field"><input placeholder="Search name, email, phone, service or message" value={search} onChange={(e) => setSearch(e.target.value)} /></div><div className="field compact-field"><select value={enquiryStatus} onChange={(e) => setEnquiryStatus(e.target.value)}><option value="all">All Statuses</option><option value="overdue">Needs follow-up</option><option value="new">New</option><option value="contacted">Contacted</option><option value="in-progress">In Progress</option><option value="closed">Closed</option></select></div></div><div className="table-wrap"><table className="admin-table enquiries-table"><thead><tr><th>Date</th><th>Contact</th><th>Service</th><th>Message</th><th>Status</th><th>Internal Note</th><th></th></tr></thead><tbody>{filteredEnquiries.map((item) => <tr key={item.id}><td className="small">{formatDate(item.createdAt)}{isEnquiryOverdue(item,settings.followUpHours || 48) && <span className="overdue-label">Follow-up due</span>}</td><td><strong>{item.name}</strong><br/><a href={`mailto:${item.email}`}>{item.email}</a><br/><span>{item.phone}</span></td><td>{item.service}</td><td className="message-cell">{item.message}</td><td><select className={`status-select ${item.status || 'new'}`} value={item.status || 'new'} onChange={(e) => updateEnquiry(item, { status: e.target.value })}><option value="new">New</option><option value="contacted">Contacted</option><option value="in-progress">In Progress</option><option value="closed">Closed</option></select></td><td><textarea className="note-box" defaultValue={item.notes || ''} placeholder="Add note..." onBlur={(e) => { if (e.target.value !== (item.notes || '')) updateEnquiry(item, { notes: e.target.value }); }} /></td><td>{can('enquiries:delete') && <button className="admin-btn danger" onClick={() => deleteEnquiry(item.id)}>Delete</button>}</td></tr>)}</tbody></table></div>{filteredEnquiries.length === 0 && <EmptyPanel title="No matching enquiries" text="Try another search or status filter." />}</div>}
+        {(tab==='enquiries'||tab==='followups') && <CRMWorkspace key={tab} api={api} can={can} notify={notify} onSummary={setEnquirySummary} initialView={tab==='followups'?'tasks':'pipeline'} initialTask={enquiryStatus==='overdue'?'overdue':'today'} followUpHours={settings.followUpHours||48}/>}
+        {tab==='operations' && <OperationsWorkspace api={api} can={can} notify={notify} settings={settings} setSettings={setSettings} onSave={saveSettings} saving={saving}/> }
 
         {tab === 'menus' && <form onSubmit={saveSettings}><div className="admin-page-head"><div><h2>Navigation</h2><p className="small">Build header dropdowns and footer links visually.</p></div><button className="admin-btn" disabled={saving}>Save Navigation</button></div><div className="admin-card"><MenuBuilder title="Header Menu" items={menus.header || []} allowChildren onChange={(header) => setMenus({ ...menus, header })} /></div><div className="admin-card"><MenuBuilder title="Footer Quick Links" items={menus.footer || []} onChange={(footer) => setMenus({ ...menus, footer })} /></div></form>}
 
-        {tab === 'forms' && <form className="admin-card" onSubmit={saveSettings}><div className="admin-page-head"><div><h2>Contact Form</h2><p className="small">Control the options and messages shown in your website enquiry form.</p></div><button className="admin-btn" disabled={saving}>Save Form Settings</button></div><div className="admin-grid"><Field label="Form Heading" value={settings.formHeading || 'Send an Enquiry'} onChange={(v) => setSettings({ ...settings, formHeading: v })} /><Field label="Success Message" value={settings.formSuccessMessage || 'Thanks — your enquiry has been received.'} onChange={(v) => setSettings({ ...settings, formSuccessMessage: v })} /><Field label="Enquiry Retention (Days)" type="number" value={settings.enquiryRetentionDays || 365} onChange={(v) => setSettings({ ...settings, enquiryRetentionDays: Number(v) || 365 })} help="Older enquiries are automatically removed when new submissions arrive. Minimum 30 days." /></div><div className="field"><label>Service Dropdown Options</label><textarea value={(settings.formServices || []).join('\n')} onChange={(e) => setSettings({ ...settings, formServices: e.target.value.split('\n').map((v) => v.trim()).filter(Boolean) })}></textarea><p className="small field-help">One service per line. These options appear in the public contact form.</p></div><DeliverySettings settings={settings} setSettings={setSettings} storage={storage} Field={Field}/></form>}
+        {tab === 'forms' && <form className="admin-card" onSubmit={saveSettings}><div className="admin-page-head"><div><h2>Contact Form</h2><p className="small">Control the options and messages shown in your website enquiry form.</p></div><button className="admin-btn" disabled={saving}>Save Form Settings</button></div><div className="admin-grid"><Field label="Form Heading" value={settings.formHeading || 'Send an Enquiry'} onChange={(v) => setSettings({ ...settings, formHeading: v })} /><Field label="Success Message" value={settings.formSuccessMessage || 'Thanks — your enquiry has been received.'} onChange={(v) => setSettings({ ...settings, formSuccessMessage: v })} /><Field label="Enquiry Retention (Days)" type="number" value={settings.enquiryRetentionDays || 365} onChange={(v) => setSettings({ ...settings, enquiryRetentionDays: Number(v) || 365 })} help="Scheduled maintenance removes expired enquiries, including when the site is quiet. Minimum 30 days." /></div><div className="field"><label>Service Dropdown Options</label><textarea value={(settings.formServices || []).join('\n')} onChange={(e) => setSettings({ ...settings, formServices: e.target.value.split('\n').map((v) => v.trim()).filter(Boolean) })}></textarea><p className="small field-help">One service per line. These options appear in the public contact form.</p></div><DeliverySettings settings={settings} setSettings={setSettings} storage={storage} Field={Field}/></form>}
 
         {tab === 'appearance' && <form className="admin-card" onSubmit={saveSettings}>
           <div className="admin-page-head"><div><h2>Appearance</h2><p className="small">Customize branding, colors, browser icon and site-wide CSS.</p></div><button className="admin-btn" disabled={saving}>Save Appearance</button></div>
@@ -551,6 +544,7 @@ export default function AdminPage() {
           <div className="admin-card"><div className="admin-page-head"><div><h3>Security Audit Log</h3><p className="small">Recent logins and sensitive admin actions.</p></div><a className="admin-btn light" href="/api/admin/security/audit/export">Export CSV</a></div><div className="field search-field"><input placeholder="Search user, action, IP or target..." value={securitySearch} onChange={(e) => setSecuritySearch(e.target.value)} /></div><div className="table-wrap"><table className="admin-table"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Target</th><th>IP</th></tr></thead><tbody>{filteredSecurityEvents.map((event) => <tr key={event.id || `${event.at}-${event.action}`}><td>{formatDate(event.at)}</td><td>{event.username}</td><td>{event.action}</td><td>{event.target || '—'}</td><td>{event.ip || '—'}</td></tr>)}</tbody></table>{filteredSecurityEvents.length === 0 && <div className="empty-state">No matching audit events.</div>}</div></div>
         </div>}
 
+        {tab==='backup'&&<div className="admin-card"><h2>Content export</h2><p className="small">The JSON export contains CMS records and optional enquiries. Uploaded media files are stored separately. Use Operations &amp; Booking for encrypted application and media backups.</p>{can('operations:read')&&<button className="admin-btn light" onClick={()=>navigateTab('operations')}>Open backup operations</button>}</div>}
         {tab === 'backup' && <div className="admin-card"><div className="admin-page-head"><div><h2>Backup & Restore</h2><p className="small">Export website configuration safely. Enquiries are excluded by default because they contain personal information.</p></div><a className="admin-btn" href="/api/admin/backup">Download Safe Backup</a></div><div className="backup-grid"><div className="backup-box"><h3>Website Backup</h3><p>Pages, sections, menus, settings, media references and revision history. Enquiries are excluded.</p><a className="admin-btn light" href="/api/admin/backup">Export Safe Backup</a>{can('enquiries:export') && <a className="admin-btn light" href="/api/admin/backup?includeEnquiries=true">Export With Enquiries</a>}</div>{session.role === 'super_admin' && <div className="backup-box"><h3>Restore Website Data</h3><p>Super Admin only. This replaces the currently stored CMS content. Create a fresh backup first.</p><label className="admin-btn light file-button">Choose Backup File<input type="file" accept="application/json,.json" onChange={importBackup} /></label></div>}</div></div>}
 
         {tab === 'help' && <div><div className="admin-page-head"><div><h2>Help & Quick Guide</h2><p className="small">Simple instructions for day-to-day website management.</p></div></div><div className="help-grid"><div className="admin-card"><h3>Edit a Page</h3><p>Go to <b>Pages → Edit</b>. Change the content while watching the live preview, then click <b>Save Changes</b>.</p></div><div className="admin-card"><h3>Add a Service Page</h3><p>Go to <b>Pages → + Service Page</b>. A starter layout is created automatically. Replace the text and publish.</p></div><div className="admin-card"><h3>Change an Image</h3><p>Click <b>Choose Media</b> next to an image field. Pick an existing image or upload a new one.</p></div><div className="admin-card"><h3>Edit Dropdown Menus</h3><p>Go to <b>Navigation</b>. Add parent links and child links, reorder them, then save.</p></div><div className="admin-card"><h3>Handle Enquiries</h3><p>Go to <b>Enquiries</b>. Change the status from New to Contacted, In Progress or Closed and add internal notes.</p></div><div className="admin-card"><h3>Recover Content</h3><p>Every saved page keeps revisions. Open the page, expand <b>Revision History</b> and restore a previous version.</p></div><div className="admin-card"><h3>Security Center</h3><p>Use <b>Security</b> to review 2FA, password hashing, audit events and immediately sign out all sessions if access is ever in doubt.</p></div></div></div>}
