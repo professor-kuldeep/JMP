@@ -1,3 +1,5 @@
+> v9 also includes the experience/operations migration. Read [EXPERIENCE-UPGRADE.md](EXPERIENCE-UPGRADE.md) first when upgrading this package.
+
 # JMP CMS v8 — Visitor analytics, GA4, GSC and enquiry attribution
 
 Open **Admin > Traffic & Search** after installing this release. The existing website design and CSS corrections are retained.

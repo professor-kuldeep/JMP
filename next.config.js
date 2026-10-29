@@ -9,7 +9,12 @@ const baseSecurityHeaders = [
 ];
 
 const nextConfig = {
-  images: { unoptimized: true },
+  images: {
+    formats: ['image/avif','image/webp'],
+    remotePatterns: process.env.NEXT_PUBLIC_SUPABASE_URL ? [{ protocol:'https', hostname:new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname, pathname:'/storage/v1/object/public/**' }] : [],
+    maximumRedirects: 0,
+    dangerouslyAllowLocalIP: false
+  },
   poweredByHeader: false,
   async headers() {
     return [

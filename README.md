@@ -1,28 +1,42 @@
-# JMP CMS v8 — Traffic, Search and CRM
+# JMP CMS v9 — visitor experience, CRM & booking
 
-Visitor analytics, GA4/GSC reporting connections and enquiry attribution are included. Read **ANALYTICS-CRM-UPGRADE.md** first for the additive database migration, Google setup and verification limits. Existing CSS fixes are described in **CSS-FIXES.md**.
+The existing Next.js 16 / Supabase website now includes a service finder, searchable resources, mobile contact controls, readable page layouts, 4:3 image controls, calendar booking, a CRM pipeline and an operations workspace.
 
-# JMP / CoreTax CMS v7
-
-The existing Next.js 16 and Supabase CMS with an upgraded public website, functional rich-text formatting toggles and a scrollable preview of the actual page layout.
+Start with **[EXPERIENCE-UPGRADE.md](EXPERIENCE-UPGRADE.md)** for installation, the required migration, calendar/email setup, encrypted backups, scheduling and verification limits.
 
 ## Install and check
+
+Use Node.js 24.
 
 ```bash
 npm ci
 npm test
 npm run build
+npm run test:smoke
 npm start
 ```
 
-Use Node.js 24. Deploy through the existing GitHub / Vercel project and retain its Supabase and authentication settings.
+Deploy through the existing GitHub / Vercel project and retain its Supabase, authentication and Turnstile environment settings. For an existing v8 database, run `supabase/migrations/20261028_experience_v9.sql` before deploying. For a fresh database, use the complete `supabase/schema.sql`. Earlier installations also need the included v8 analytics migration.
 
-See DESIGN-UPGRADE.md for the full change list, applying content to an existing database, scheduled publishing, email delivery, analytics and verification limits. SUPABASE-SETUP.md and SECURITY-SETUP.md still describe the existing database and authentication setup. For v8 analytics, run the additive migration in ANALYTICS-CRM-UPGRADE.md; existing content and authentication tables are retained.
+## Features and configuration
 
-Use Admin > Website Health to review the content upgrade plan for an existing database. Add approved team details through the Team / Partner Profiles section type.
+- **Enquiries:** Pipeline, List and Follow-ups views; stage/owner/service search; atomic submissions; duplicate protection; conflict-aware edits; notes and activity; filtered CSV exports.
+- **Operations & Booking:** actual Google Calendar availability, working hours and appointment management; email delivery queue and retries; maintenance status; encrypted application/media backups and verified restoration.
+- **Traffic & Search:** consent-aware visitor tracking, enquiry attribution and existing GA4/GSC report connections. See [ANALYTICS-CRM-UPGRADE.md](ANALYTICS-CRM-UPGRADE.md).
+- **CMS:** existing pages, blog, formatting controls, page preview, navigation, publication scheduling, appearance settings, account security and role permissions.
 
-For a production-style preview, run the build and start commands above. The strict production Content Security Policy intentionally does not permit eval used by React development diagnostics.
+Calendar booking begins disabled until the team calendar is configured. Email, encrypted backups and the production scheduler each require the server settings listed in the upgrade guide. Code and provider fixtures have been tested; real account authorization and production activation must be completed in the hosting environment.
 
-## Rollback
+The original JSON content export remains available. It contains media references; encrypted application and uploaded-media backups are managed in Operations & Booking.
 
-Revert the application code or promote an earlier Vercel deployment. That restores code, not database state. Content changed through the upgrade plan retains revisions in the existing CMS revision history.
+## Existing setup references
+
+See [SUPABASE-SETUP.md](SUPABASE-SETUP.md), [SECURITY-SETUP.md](SECURITY-SETUP.md) and [PASSWORD-RESET-SETUP.md](PASSWORD-RESET-SETUP.md) for the existing account/database setup. [DESIGN-UPGRADE.md](DESIGN-UPGRADE.md), [CSS-FIXES.md](CSS-FIXES.md) and [APPEARANCE-UPGRADE.md](APPEARANCE-UPGRADE.md) describe retained design/editor features.
+
+Use Admin → Website Health for the existing content upgrade review. Add approved team information through the Team / Partner Profiles section type.
+
+For a production-style preview, use `npm run build` followed by `npm start`. The production CSP does not allow the eval used by React development diagnostics. Managed browser preview was unavailable for this upgrade; desktop/mobile layout, keyboard and 200% zoom review remain deployment checks.
+
+## Rollback and recovery
+
+Promoting an earlier Vercel deployment restores application code. Database state and external calendars have separate lifecycles. Existing CMS content revisions remain available; v9 adds encrypted application/media recovery. Preserve the database backup and stable encryption keys before any production upgrade or restoration. Review appointments, restored notification jobs and Google connections after restoring data.

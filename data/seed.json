@@ -67,7 +67,7 @@
         ]
       },
       {
-        "label": "Other Services",
+        "label": "CoreTax Services",
         "url": "/other-services",
         "children": [
           {
@@ -127,7 +127,7 @@
         "url": "/our-services"
       },
       {
-        "label": "Other Services",
+        "label": "CoreTax Services",
         "url": "/other-services"
       },
       {
@@ -151,10 +151,10 @@
       "template": "home",
       "order": 1,
       "heroKicker": "Chartered Accountants",
-      "heroTitle": "Reliable financial clarity for growing businesses.",
-      "heroText": "A modern accounting, tax and advisory practice built on 35+ years of trust, practical thinking and long-term client relationships.",
+      "heroTitle": "Accounting, tax and compliance. A clear next step.",
+      "heroText": "Chartered accountants in Vadodara, supporting individuals and businesses with accounting, taxation, audit and compliance. Find the service you need or speak with our team.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -214,12 +214,12 @@
             {
               "title": "Audit & Assurance",
               "text": "Independent, structured audit support designed to bring confidence to stakeholders.",
-              "url": "/our-services"
+              "url": "/audit-assurance"
             },
             {
               "title": "Taxation",
               "text": "Income tax planning, filing, representation and compliance for individuals and entities.",
-              "url": "/our-services"
+              "url": "/income-tax-services"
             },
             {
               "title": "CoreTax Consultancy",
@@ -251,7 +251,7 @@
       "heroTitle": "A professional accounting practice built on trust and long-term relationships.",
       "heroText": "We combine practical experience, compliance discipline and business-focused advisory to support growing clients.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -304,7 +304,7 @@
       "heroTitle": "Comprehensive CA services for individuals, firms and companies.",
       "heroText": "From audit and taxation to corporate compliance and financial advisory, the firm offers structured support for routine and strategic requirements.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -364,7 +364,7 @@
     {
       "id": 4,
       "slug": "other-services",
-      "title": "Other Services",
+      "title": "CoreTax Services",
       "seoTitle": "Other Services | J M Pabari & Associates",
       "metaDescription": "A focused services page for CoreTax Consultancy covering accounting, GST, income tax, payroll, reporting, setup and business advisory support.",
       "status": "published",
@@ -374,7 +374,7 @@
       "heroTitle": "Dedicated CoreTax services for accounting, tax and business support.",
       "heroText": "A focused services page for CoreTax Consultancy covering accounting, GST, income tax, payroll, reporting, setup and business advisory support.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -472,7 +472,7 @@
       "heroTitle": "Helpful resources for tax, compliance and financial clarity.",
       "heroText": "Practical preparation checklists to help you organise records before speaking with our team.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -546,7 +546,7 @@
       "heroTitle": "Build your career with a professional CA practice.",
       "heroText": "Introduce yourself and the work that interests you. Our team will confirm whether a suitable opportunity is available.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -605,7 +605,7 @@
       "heroTitle": "Let’s discuss your accounting, tax or compliance requirement.",
       "heroText": "Share your details and the team will get back to you with the next steps.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -629,7 +629,7 @@
       "heroTitle": "Privacy Policy",
       "heroText": "This page explains how website enquiries and visitor information may be handled.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -655,7 +655,7 @@
       "heroTitle": "Terms & Conditions",
       "heroText": "This page outlines the general terms for using the website.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",
@@ -681,7 +681,7 @@
       "heroTitle": "Your enquiry has been submitted.",
       "heroText": "Thank you for contacting us. Our team will review your message and get back to you shortly.",
       "heroImage": "",
-      "button1Text": "Book a Consultation →",
+      "button1Text": "Request a Consultation →",
       "button1Url": "/contact",
       "button2Text": "Explore Services",
       "button2Url": "/our-services",

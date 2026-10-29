@@ -1,0 +1,16 @@
+{
+  "version": "9.0.0",
+  "date": "2026-10-28",
+  "automated_tests": {
+    "total": 102,
+    "passed": 102,
+    "failed": 0
+  },
+  "production_build": "passed (Next.js 16.3.3)",
+  "http_smoke": "passed: key public routes, private API boundaries, image optimization",
+  "database_checks": "PostgreSQL engine (PGlite), migrations and transactional behavior",
+  "component_checks": "React/jsdom interaction tests",
+  "browser_qa": "blocked by managed preview passing unsupported Next.js flags",
+  "live_providers": "not authorized or exercised; configure Supabase, Calendar, email and scheduler after deploying",
+  "setup": "EXPERIENCE-UPGRADE.md"
+}
