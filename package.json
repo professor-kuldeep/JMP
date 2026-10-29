@@ -1,6 +1,6 @@
 {
   "name": "jm-pabari-coretax-vercel-supabase-cms",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "private": true,
   "engines": {
     "node": "24.x"
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "2.76.1",
+    "google-auth-library": "^10.9.1",
     "next": "16.3.3",
     "react": "19.0.0",
     "react-dom": "19.0.0"

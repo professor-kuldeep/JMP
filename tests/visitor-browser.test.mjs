@@ -1,0 +1,11 @@
+import test,{after} from 'node:test';
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import {JSDOM} from 'jsdom';
+import {visitorContext,clearVisitorContext} from '../app/lib/visitor-browser.mjs';
+const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://firm.example/gst-services?utm_source=newsletter&utm_medium=email&utm_campaign=october',referrer:'https://example.org/path?private=1'});
+globalThis.window=dom.window;globalThis.document=dom.window.document;Object.defineProperty(window.crypto,'randomUUID',{value:crypto.randomUUID});after(()=>dom.window.close());
+test('visitor identifiers are not created without analytics consent',()=>{clearVisitorContext();window.__jmpVisitTrackingReady=false;assert.equal(visitorContext(),null);assert.equal(window.localStorage.length,0);assert.equal(window.sessionStorage.length,0);});
+test('attribution preserves a visit entry through navigation and starts a new session after inactivity',()=>{window.__jmpVisitTrackingReady=true;const first=visitorContext(1000000000000);window.history.pushState({},'','/contact?service=GST&email=excluded');const next=visitorContext(1000000010000);assert.equal(first.visitorId,next.visitorId);assert.equal(first.sessionId,next.sessionId);assert.equal(next.landingPage,'/gst-services');assert.equal(next.source,'newsletter');assert.equal(next.path,'/contact');assert.ok(!JSON.stringify(next).includes('excluded'));assert.notEqual(visitorContext(1000002000000).sessionId,next.sessionId);});
+test('withdrawal clears stored visitor and session identifiers',()=>{clearVisitorContext();window.__jmpVisitTrackingReady=false;assert.equal(visitorContext(),null);assert.equal(window.localStorage.getItem('jmp-visitor-v1'),null);assert.equal(window.sessionStorage.getItem('jmp-visit-v1'),null);});
+test('global privacy control and private routes suppress visitor identity generation',()=>{window.__jmpVisitTrackingReady=true;Object.defineProperty(window.navigator,'globalPrivacyControl',{configurable:true,value:true});assert.equal(visitorContext(),null);Object.defineProperty(window.navigator,'globalPrivacyControl',{configurable:true,value:false});window.history.pushState({},'','/reset-password?token=secret');assert.equal(visitorContext(),null);assert.equal(window.localStorage.length,0);});
