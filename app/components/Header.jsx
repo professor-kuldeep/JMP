@@ -49,7 +49,7 @@ export default function Header({ settings = {}, menus, preview = false }) {
     <header className="site-header" ref={root}>
       <div className="header-utility"><div className="container">
         <span>{settings.tagline || 'Chartered Accountants'}<span className="utility-divider" aria-hidden="true">/</span>J M Pabari &amp; Associates</span>
-        <div>{settings.email && <a href={`mailto:${settings.email}`}><Icon name="mail" size={13}/>{settings.email}</a>}{settings.phone && <a href={`tel:${settings.phone.replace(/[^+\d]/g, '')}`}><Icon name="phone" size={13}/>{settings.phone}</a>}</div>
+        <div>{settings.clientPortalEnabled===true && <Link href="/client-portal">Client portal</Link>}{settings.email && <a href={`mailto:${settings.email}`}><Icon name="mail" size={13}/>{settings.email}</a>}{settings.phone && <a href={`tel:${settings.phone.replace(/[^+\d]/g, '')}`}><Icon name="phone" size={13}/>{settings.phone}</a>}</div>
       </div></div>
       <div className="container header-inner">
         <Link className="logo" href="/" aria-label={`${settings.siteName || 'J M Pabari & Associates'} home`} onClick={close}>
@@ -59,7 +59,7 @@ export default function Header({ settings = {}, menus, preview = false }) {
           <Icon name={open ? 'close' : 'menu'}/>
         </button>
         <nav id="primary-navigation" className={`nav ${open ? 'open' : ''}`} aria-label="Primary navigation">
-          <Link className="nav-search-link" href="/resources#resource-library" onClick={close} aria-label="Search resources"><Icon name="document" size={16}/><span>Find a resource</span></Link>
+          <Link className="nav-search-link" href="/search" onClick={close} aria-label="Search the website"><Icon name="document" size={16}/><span>Search website</span></Link>
           {header.map((item, index) => item.children?.length ? (
             <div className={`nav-item dropdown ${expanded === index ? 'expanded' : ''}`} key={`${item.label}-${index}`}
               onPointerEnter={(event) => { if (event.pointerType === 'mouse' && (root.current?.ownerDocument.defaultView?.innerWidth || window.innerWidth) > 1100) setExpanded(index); }}

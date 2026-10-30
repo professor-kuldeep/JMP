@@ -12,6 +12,6 @@ export default function QuickContact({phone=''}) {
   const mutation=new MutationObserver(scan);mutation.observe(document.body,{childList:true,subtree:true});document.addEventListener('focusin',update);document.addEventListener('focusout',update);scan();
   return()=>{observer.disconnect();mutation.disconnect();document.removeEventListener('focusin',update);document.removeEventListener('focusout',update);};
  },[path]);
- if(path.startsWith('/admin')||path.startsWith('/reset-password')||path.startsWith('/booking/manage')||hidden)return null;
+ if(path==='/waitlist'||path==='/client-portal'||path.startsWith('/admin')||path.startsWith('/reset-password')||path.startsWith('/booking/manage')||hidden)return null;
  return <aside className="quick-contact" aria-label="Quick contact">{phone&&<a href={'tel:'+phone.replace(/[^+\d]/g,'')}><Icon name="phone" size={19}/>Call the team</a>}<Link href="/contact#enquiry-form"><Icon name="mail" size={19}/>Send an enquiry</Link></aside>;
 }

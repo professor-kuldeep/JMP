@@ -6,7 +6,7 @@ import {clearVisitorContext,sendVisit} from '../lib/visitor-browser.mjs';
 const CONSENT_KEY='jmp-analytics-consent-v2';
 export default function PublicAnalytics({measurementId='',enabled=false,visitorEnabled=true}) {
   const pathname=usePathname()||'/';
-  const publicPage=!/^\/(admin|api|reset-password|booking\/manage)(\/|$)/.test(pathname);
+  const publicPage=!/^\/(admin|api|reset-password|client-portal|waitlist|booking\/manage)(\/|$)/.test(pathname);
   const googleActive=enabled&&/^G-[A-Z0-9]{4,20}$/.test(measurementId);
   const active=publicPage&&(visitorEnabled||googleActive);
   const [choice,setChoice]=useState(null),[loaded,setLoaded]=useState(false);
