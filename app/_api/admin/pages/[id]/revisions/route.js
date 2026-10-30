@@ -1,3 +1,4 @@
+import {requirePublishingReview} from '../../../../../lib/content-review';
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 import { requirePermission } from '../../../../../lib/auth';
@@ -16,6 +17,7 @@ export async function POST(request, { params }) {
     if (index === -1) return NextResponse.json({ message: 'Page not found.' }, { status: 404 });
     const key = String(pageId); const history = revisions[key] || []; const revision = history.find((item) => String(item.id) === String(revisionId));
     if (!revision?.page) return NextResponse.json({ message: 'Revision not found.' }, { status: 404 });
+    await requirePublishingReview(session,revision.page,pages[index]);
     const current = structuredClone(pages[index]); revisions[key] = [{ id: crypto.randomUUID(), savedAt: new Date().toISOString(), savedBy: session.username, page: current }, ...history].slice(0, 30);
     const restored = { ...structuredClone(revision.page), id: pageId, updatedAt: new Date().toISOString(), updatedBy: session.username }; const nextPages = [...pages]; nextPages[index] = restored;
     await Promise.all([savePages(nextPages), saveRevisions(revisions)]); await writeSecurityAudit(request, session, 'page_revision_restored', `page:${pageId}`, { revisionId });

@@ -10,6 +10,8 @@ import {clearGoogleCache} from '../../../lib/google-integration';
 import { hasPermission } from '../../../lib/permissions';
 import { BOOKING_KEYS,validateBookingSettings } from '../../../lib/booking.mjs';
 import { calendarEnvironment } from '../../../lib/calendar';
+import {validateWorkflowRules} from '../../../lib/practice.mjs';
+import {checkOwner, assertPortalReady} from '../../../lib/practice-store';
 
 const FORM_KEYS = new Set(['formHeading','formSuccessMessage','formServices','enquiryRetentionDays','notificationEmail','enquiryNotificationsEnabled','enquiryAcknowledgementEnabled','followUpHours']);
 const APPEARANCE_KEYS = new Set(['logo','footerLogo','primaryColor','accentColor','footerText','favicon','headingColor','textColor','backgroundColor','surfaceColor','linkColor','footerBackgroundColor','customCss']);
@@ -44,7 +46,7 @@ export async function PUT(request) {
     const keys = changedKeys(currentSettings, requestedSettings);
 
     for (const key of keys) {
-      const required = BOOKING_KEYS.includes(key) ? 'booking:manage' : ANALYTICS_KEYS.includes(key) ? 'analytics:manage' : FORM_KEYS.has(key) ? 'forms:write' : APPEARANCE_KEYS.has(key) ? 'appearance:write' : 'settings:write';
+      const required = ['practiceWorkflowRules','practiceRemindersEnabled','clientPortalEnabled'].includes(key) ? 'practice:manage' : key==='contentApprovalRequired' ? 'pages:approve' : BOOKING_KEYS.includes(key) ? 'booking:manage' : ANALYTICS_KEYS.includes(key) ? 'analytics:manage' : FORM_KEYS.has(key) ? 'forms:write' : APPEARANCE_KEYS.has(key) ? 'appearance:write' : 'settings:write';
       if (!hasPermission(session.role, required)) return NextResponse.json({ message: `You do not have permission to change ${key}.` }, { status: 403 });
     }
 
@@ -54,6 +56,9 @@ export async function PUT(request) {
     if (requestedSettings.gaMeasurementId && !/^G-[A-Z0-9]{4,20}$/.test(requestedSettings.gaMeasurementId)) return NextResponse.json({message:'Enter a valid GA4 measurement ID (G-...).'}, {status:400});
     if (requestedSettings.notificationEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestedSettings.notificationEmail)) return NextResponse.json({message:'Enter a valid enquiry notification email.'},{status:400});
     if (requestedSettings.followUpHours != null && (!Number.isFinite(Number(requestedSettings.followUpHours)) || Number(requestedSettings.followUpHours) < 1 || Number(requestedSettings.followUpHours) > 720)) return NextResponse.json({message:'Follow-up reminders must be between 1 and 720 hours.'},{status:400});
+    for(const key of ['clientPortalEnabled','practiceRemindersEnabled','contentApprovalRequired'])if(requestedSettings[key]!=null&&typeof requestedSettings[key]!=='boolean')return NextResponse.json({message:'Choose valid client workspace and publishing settings.'},{status:400});
+    if(keys.includes('practiceWorkflowRules')){const rules=validateWorkflowRules(requestedSettings.practiceWorkflowRules);for(const rule of rules){const user=await checkOwner(rule.ownerId);rule.ownerName=user?.displayName||user?.username||'';}requestedSettings.practiceWorkflowRules=rules;}
+    if(keys.includes('clientPortalEnabled')&&requestedSettings.clientPortalEnabled)await assertPortalReady(requestedSettings);
     try {validateAnalyticsSettings(requestedSettings);} catch(error) {return NextResponse.json({message:error.message},{status:400});}
     if(keys.some(key=>ANALYTICS_KEYS.includes(key)))clearGoogleCache();
     try { validateBookingSettings(requestedSettings); } catch(error) { return NextResponse.json({message:error.message},{status:400}); }

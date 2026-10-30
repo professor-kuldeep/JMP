@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import {after,NextResponse} from 'next/server';
 import {getSettings} from '../../lib/store';
+import {enquiryAutomation} from '../../lib/practice.mjs';
 import {createEnquiry} from '../../lib/crm-store';
 import {validateEnquiry,UUID} from '../../lib/crm.mjs';
 import {enquiryMailPlans,mailConfiguration} from '../../lib/enquiry-mail.mjs';
@@ -21,7 +22,7 @@ export async function POST(request){
   const turnstile=await verifyTurnstile(payload.turnstileToken,request);if(!turnstile.ok)return NextResponse.json({message:'Security verification failed. Please try again.'},{status:403});
   const limit=await checkContactRateLimit(request);if(limit.unavailable)return NextResponse.json({message:'Form protection is temporarily unavailable. Please try again shortly.'},{status:503});
   if(!limit.allowed)return NextResponse.json({message:'Too many submissions. Please try again later.'},{status:429,headers:{'Retry-After':String(limit.retryAfter||600)}});
-  const settings=await getSettings(),enquiry={...validation.value,status:'new',notes:'',source:'Website Contact Form',createdAt:new Date().toISOString(),sourceIpHash:crypto.createHmac('sha256',process.env.ADMIN_SECRET||'local-dev-only').update(getClientIp(request)).digest('hex').slice(0,20)};
+  const settings=await getSettings(),enquiry=enquiryAutomation({...validation.value,status:'new',notes:'',source:'Website Contact Form',createdAt:new Date().toISOString(),sourceIpHash:crypto.createHmac('sha256',process.env.ADMIN_SECRET||'local-dev-only').update(getClientIp(request)).digest('hex').slice(0,20)},settings);
   const attribution=settings.visitorTrackingEnabled!==false&&request.headers.get('dnt')!=='1'&&request.headers.get('sec-gpc')!=='1'?normalizeAttribution(payload.attribution):null;if(attribution)enquiry.attribution=attribution;
   const plans=mailConfiguration().configured?enquiryMailPlans({...enquiry,id:payload.requestKey},settings):[],saved=await createEnquiry(enquiry,payload.requestKey,plans);
   after(async()=>{

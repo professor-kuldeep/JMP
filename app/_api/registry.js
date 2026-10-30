@@ -45,6 +45,14 @@ import * as handler42 from './booking/route.js';
 import * as handler43 from './contact/route.js';
 import * as handler44 from './health/route.js';
 import * as handler45 from './maintenance/route.js';
+import * as handler46 from './admin/practice/files/route.js';
+import * as handler47 from './admin/practice/route.js';
+import * as handler48 from './admin/reviews/route.js';
+import * as handler49 from './booking/waitlist/route.js';
+import * as handler50 from './integrations/email/route.js';
+import * as handler51 from './portal/files/route.js';
+import * as handler52 from './portal/session/route.js';
+import * as handler53 from './portal/workspace/route.js';
 
 export const routes=[
   {path:"/admin/account/password",handlers:handler0},
@@ -93,4 +101,12 @@ export const routes=[
   {path:"/contact",handlers:handler43},
   {path:"/health",handlers:handler44},
   {path:"/maintenance",handlers:handler45},
+  {path:"/admin/practice/files",handlers:handler46},
+  {path:"/admin/practice",handlers:handler47},
+  {path:"/admin/reviews",handlers:handler48},
+  {path:"/booking/waitlist",handlers:handler49},
+  {path:"/integrations/email",handlers:handler50},
+  {path:"/portal/files",handlers:handler51},
+  {path:"/portal/session",handlers:handler52},
+  {path:"/portal/workspace",handlers:handler53},
 ];
