@@ -1,0 +1,3 @@
+'use client';
+import Link from 'next/link';
+export default function ErrorPage({reset}){return <main id="main-content" className="public-main" tabIndex={-1}><section className="section"><div className="container"><span className="eyebrow">Please try again</span><h1>This page could not be loaded.</h1><p>Your connection may have been interrupted. Try loading the page again or contact the team if the problem continues.</p><div className="hero-actions"><button className="btn" onClick={reset}>Try again</button><Link className="btn outline" href="/contact">Contact the team</Link></div></div></section></main>;}

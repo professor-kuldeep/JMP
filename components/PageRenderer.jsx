@@ -3,6 +3,12 @@ import './formatted-text.css';
 import Link from 'next/link';
 import ContactForm from './ContactForm';
 import Icon from './Icon';
+import SiteImage from './SiteImage';
+import ServiceFinder from './ServiceFinder';
+import ResourceExplorer from './ResourceExplorer';
+import ServiceNavigation from './ServiceNavigation';
+import EnquiryConfirmation from './EnquiryConfirmation';
+import {SERVICE_GUIDES,sectionAnchors,resourceCatalog,imagePosition,refinePublicPage,serviceFinderOptions} from '../lib/experience.mjs';
 
 import {PAGE_SERVICES,serviceContactUrl} from '../lib/service-links.mjs';
 
@@ -11,7 +17,7 @@ const serviceIcons = ['shield', 'document', 'briefcase', 'people', 'chart', 'clo
 function Hero({ page }) {
   const home = page.template === 'home' || page.slug === 'home';
   const visual = home || Boolean(page.heroImage);
-  return <section className={`hero ${home ? 'hero-home' : 'hero-inner'} ${visual ? 'has-visual' : ''}`} aria-labelledby="page-heading">
+  return <section id="overview" className={`hero ${home ? 'hero-home' : 'hero-inner'} ${visual ? 'has-visual' : ''}`} aria-labelledby="page-heading">
     <div className="container hero-grid">
       <div className="hero-copy">
         {!home && <nav className="breadcrumbs" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><span aria-current="page">{page.title}</span></nav>}
@@ -24,10 +30,10 @@ function Hero({ page }) {
         </div>}
         {home && <div className="hero-note"><Icon name="shield" size={19}/><span>Accounting. Taxation. Advisory.</span></div>}
       </div>
-      {visual && <div className={`hero-art ${!page.heroImage ? 'hero-art-default' : ''}`}>
-        <div className="hero-image-frame"><img src={page.heroImage || '/assets/img/hero-desk.webp'} alt={page.heroImage ? (page.heroTitle || page.title) : 'A professional workspace with a laptop, notebook and Chartered Accountant mug'} width={page.heroImage ? undefined : 692} height={page.heroImage ? undefined : 248} fetchPriority="high"/></div>
-        {home && <><div className="hero-art-caption"><span className="art-caption-line"/><div><span>A clearer perspective.</span><small>For your next business decision.</small></div><Icon name="diagonal" size={28}/></div><span className="hero-art-index" aria-hidden="true">JMP / ADVISORY</span></>}
-      </div>}
+      {visual && <figure className={`hero-art hero-art-v2 ${!page.heroImage ? 'hero-art-default' : ''}`}>
+        <div className="hero-image-frame"><SiteImage src={page.heroImage || '/assets/img/hero-desk.webp'} alt={page.heroAlt || (page.heroImage ? (page.heroTitle || page.title) : 'A professional workspace with a laptop, notebook and Chartered Accountant mug')} priority style={{objectPosition:imagePosition(page.heroFocalPoint||(!page.heroImage?{x:100,y:50}:undefined))}}/></div>
+        {home && <figcaption className="hero-art-caption"><span className="art-caption-line" aria-hidden="true"/><div><span>A clearer perspective.</span><small>For your next business decision.</small></div></figcaption>}
+      </figure>}
     </div>
   </section>;
 }
@@ -75,11 +81,17 @@ function Section({ section, settings, preview = false, service = '' }) {
   return null;
 }
 
-export default function PageRenderer({ page, settings = {}, preview = false, relatedPosts = [] }) {
+export default function PageRenderer({ page, settings = {}, preview = false, relatedPosts = [], availablePages = [] }) {
+  page=refinePublicPage(page,preview?undefined:availablePages);
+  const home=page.slug==='home'||page.template==='home',service=SERVICE_GUIDES.find(g=>g.slug===page.slug),anchors=sectionAnchors(page);
+  if(page.slug==='thank-you')return <main id="main-content" className="public-main" tabIndex={-1}><EnquiryConfirmation/></main>;
   return <main id="main-content" className={`public-main template-${page.template || 'default'}`} tabIndex={-1}>
     <Hero page={page}/>
+    {page.template==='service'&&<ServiceNavigation items={anchors.map(({id,label})=>({id,label}))}/>}
+    {home&&<ServiceFinder serviceOptions={preview?undefined:serviceFinderOptions(availablePages).map(({documents,...guide})=>guide)}/>}
     {page.template === 'blog' && <div className="container blog-article-byline"><span>{page.blogCategory || 'Insights'}</span><span>By {page.blogAuthor || 'JMP Editorial Team'}</span>{page.blogDate && <time dateTime={page.blogDate}>{new Date(`${page.blogDate}T00:00:00Z`).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric',timeZone:'UTC'})}</time>}<Link href="/blog">← All articles</Link></div>}
-    {(page.sections || []).map((section, index) => <Section section={section} settings={settings} preview={preview} service={PAGE_SERVICES[page.slug]} key={index}/>)}
+    {page.slug==='resources'?<ResourceExplorer items={resourceCatalog(availablePages)}/>:anchors.map(({id,section},index)=><div className="section-anchor" id={id} key={index}>{service&&id==='documents'?<section className="section"><div className="container"><span className="eyebrow">Prepare for a discussion</span><h2>Documents to have ready</h2><ul className="documents-list">{service.documents.map(d=><li key={d}>{d}</li>)}</ul><p className="documents-note">Bring the records that are relevant and available. The team will confirm the specific requirements after understanding your scope. Please arrange a suitable channel before sharing sensitive documents.</p><a className="text-cta" href="/downloads/first-discussion-checklist.txt" download>Download the first-discussion checklist ↓</a></div></section>:<Section section={section} settings={settings} preview={preview} service={PAGE_SERVICES[page.slug]}/>}</div>)}
+    {page.template==='contact'&&settings.bookingEnabled&&<section className="section"><div className="container booking-invite"><div><span className="eyebrow">Prefer a scheduled conversation?</span><h2>Choose a consultation time.</h2><p>See available appointments and reserve a time that works for you.</p></div><Link className="btn" href="/book-consultation">View available times <Icon name="arrow" size={18}/></Link></div></section>}
     {relatedPosts.length > 0 && <section className="section related-articles"><div className="container"><SectionHeading section={{kicker:'Keep reading',title:'Related insights'}}/><div className="related-article-grid">{relatedPosts.map(post => <article className="related-article" key={post.id}><h3><Link href={`/${post.slug}`}>{post.title}</Link></h3><p>{post.metaDescription || post.heroText}</p><Link href={`/${post.slug}`}>Read article →</Link></article>)}</div></div></section>}
   </main>;
 }

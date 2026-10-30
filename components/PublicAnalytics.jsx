@@ -6,7 +6,7 @@ import {clearVisitorContext,sendVisit} from '../lib/visitor-browser.mjs';
 const CONSENT_KEY='jmp-analytics-consent-v2';
 export default function PublicAnalytics({measurementId='',enabled=false,visitorEnabled=true}) {
   const pathname=usePathname()||'/';
-  const publicPage=!/^\/(admin|api|reset-password)(\/|$)/.test(pathname);
+  const publicPage=!/^\/(admin|api|reset-password|client-portal|waitlist|booking\/manage)(\/|$)/.test(pathname);
   const googleActive=enabled&&/^G-[A-Z0-9]{4,20}$/.test(measurementId);
   const active=publicPage&&(visitorEnabled||googleActive);
   const [choice,setChoice]=useState(null),[loaded,setLoaded]=useState(false);
@@ -48,5 +48,5 @@ export default function PublicAnalytics({measurementId='',enabled=false,visitorE
   useEffect(()=>{if(active&&choice==='allowed'&&googleActive&&loaded){window.__jmpAnalyticsReady=true;window.gtag?.('event','page_view',{page_path:pathname,page_location:window.location.origin+pathname,page_title:document.title});}},[active,choice,googleActive,loaded,pathname]);
   function choose(value){try{localStorage.setItem(CONSENT_KEY,value);}catch{}setChoice(value);}
   if(!active||choice!=='ask')return null;
-  return <div className="analytics-choice" role="region" aria-label="Usage analytics preference"><p>Allow usage analytics to help us understand visits and improve this website? Contact form contents are excluded.</p><div><button type="button" onClick={()=>choose('declined')}>Decline</button><button type="button" onClick={()=>choose('allowed')}>Allow analytics</button></div></div>;
+  return <div className="analytics-choice" role="region" aria-label="Usage analytics preference"><p>Allow optional analytics to help us improve this website. Your enquiry details are not included.</p><div><button type="button" onClick={()=>choose('declined')}>Decline</button><button type="button" onClick={()=>choose('allowed')}>Allow analytics</button></div></div>;
 }

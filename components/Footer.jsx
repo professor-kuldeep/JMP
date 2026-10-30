@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { normalizedMenus,footerBrand,DEFAULT_FOOTER_LOGO } from '../lib/experience.mjs';
 import { usePathname } from 'next/navigation';
 import Icon from './Icon';
 import FormattedText from './FormattedText';
@@ -8,16 +9,15 @@ import FormattedText from './FormattedText';
 export default function Footer({ settings = {}, menus, preview = false }) {
   const pathname = usePathname();
   if (!preview && (pathname.startsWith('/admin') || pathname.startsWith('/reset-password'))) return null;
-  const footer = menus?.footer || menus?.header || [];
-  // The bundled legacy footer bitmap is cropped; use the complete brand asset.
-  const footerLogo = !settings.footerLogo || /^\/assets\/img\/footer-logo\.(png|webp)$/.test(settings.footerLogo)
-    ? settings.logo || '/assets/img/jm-logo.webp' : settings.footerLogo;
+  const navigation = normalizedMenus(menus);
+  const footer = navigation.footer || navigation.header || [];
+  const brand=footerBrand(settings);
   const social = [['linkedin', 'LinkedIn', 'in'], ['facebook', 'Facebook', 'f'], ['instagram', 'Instagram', '◎']].filter(([key]) => settings[key] && settings[key] !== '#');
   return <footer className="site-footer">
     <div className="container footer-topline"><span>{settings.tagline || 'Chartered Accountants'}</span><a href="#main-content">Back to top <Icon name="arrow" size={16}/></a></div>
     <div className="container footer-main">
       <div className="footer-brand">
-        <img src={footerLogo} alt={settings.siteName || 'J M Pabari & Associates'} loading="lazy"/>
+        <img className={`footer-logo${brand.builtIn?' footer-logo-default':''}${brand.darkVariant?' footer-logo-dark':''}`} src={brand.src} alt={settings.siteName || 'J M Pabari & Associates'} loading="lazy" width={290} height={60} onError={event=>{if(!event.currentTarget.src.endsWith(DEFAULT_FOOTER_LOGO))event.currentTarget.src=DEFAULT_FOOTER_LOGO;}}/>
         <FormattedText text={settings.footerText || settings.tagline}/>
         {social.length > 0 && <div className="socials">{social.map(([key, label, mark]) => <a href={settings[key]} key={key} aria-label={label} target="_blank" rel="noopener noreferrer">{mark}</a>)}</div>}
       </div>

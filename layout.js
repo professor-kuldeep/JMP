@@ -1,12 +1,16 @@
 import './globals.css';
+import './experience.css';
+import './practice.css';
 import './components/formatted-text.css';
 import { Cormorant_Garamond, Poppins } from 'next/font/google';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import QuickContact from './components/QuickContact';
 import PublicAnalytics from './components/PublicAnalytics';
 import { siteOrigin } from './lib/seo.mjs';
 import PublicCustomCSS from './components/PublicCustomCSS';
-import { getMenus, getSettings } from './lib/store';
+import { getMenus, getSettings, listPages } from './lib/public-store';
+import {resolvedPublicMenus} from './lib/experience.mjs';
 import { appearanceVariables } from './lib/appearance.mjs';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-poppins' });
@@ -25,7 +29,8 @@ export async function generateMetadata() {
 }
 
 export default async function RootLayout({ children }) {
-  const [settings, menus] = await Promise.all([getSettings(), getMenus()]);
+  const [settings, storedMenus, pages] = await Promise.all([getSettings(), getMenus(), listPages()]);
+  const menus=resolvedPublicMenus(storedMenus,pages);
   return (
     <html lang="en" className={`${poppins.variable} ${cormorant.variable}`}>
       <body style={appearanceVariables(settings)}>
@@ -34,6 +39,7 @@ export default async function RootLayout({ children }) {
         <Header settings={settings} menus={menus} />
         {children}
         <Footer settings={settings} menus={menus} />
+        <QuickContact phone={settings.phone || ''}/>
       </body>
     </html>
   );
