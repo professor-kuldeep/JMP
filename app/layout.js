@@ -1,5 +1,6 @@
 import './globals.css';
 import './experience.css';
+import './practice.css';
 import './components/formatted-text.css';
 import { Cormorant_Garamond, Poppins } from 'next/font/google';
 import Header from './components/Header';

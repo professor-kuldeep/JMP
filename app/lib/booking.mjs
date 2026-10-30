@@ -1,6 +1,11 @@
 import {validTimeZone,dateKey,crmError,UUID} from './crm.mjs';
-export const BOOKING_KEYS=['bookingEnabled','bookingCalendarId','bookingTimeZone','bookingDuration','bookingBuffer','bookingLeadHours','bookingWindowDays','bookingWeekdays','bookingDayStart','bookingDayEnd','bookingBlockedDates','bookingLocation'];
-export function bookingConfig(settings={}){return {enabled:settings.bookingEnabled===true,calendarId:String(settings.bookingCalendarId||'').trim(),timeZone:validTimeZone(settings.bookingTimeZone),duration:Number(settings.bookingDuration??30),buffer:Number(settings.bookingBuffer??15),leadHours:Number(settings.bookingLeadHours??24),windowDays:Number(settings.bookingWindowDays??30),weekdays:settings.bookingWeekdays||[1,2,3,4,5],dayStart:settings.bookingDayStart||'09:30',dayEnd:settings.bookingDayEnd||'17:30',blockedDates:settings.bookingBlockedDates||[],location:String(settings.bookingLocation||'The team will confirm meeting details.').slice(0,300)};}
+export const BOOKING_KEYS=['bookingEnabled','bookingCalendarId','bookingTimeZone','bookingDuration','bookingBuffer','bookingLeadHours','bookingWindowDays','bookingWeekdays','bookingDayStart','bookingDayEnd','bookingBlockedDates','bookingLocation','bookingTeam','bookingRemindersEnabled','bookingWaitlistEnabled'];
+export function bookingTeam(settings={}) { return [{id:'default',name:'Team consultation'},...(Array.isArray(settings.bookingTeam)?settings.bookingTeam:[]).filter(s=>s.enabled!==false).map(s=>({id:s.id,name:s.name}))]; }
+export function bookingConfig(settings={},staffId='default'){
+ const staff=staffId==='default'?null:(Array.isArray(settings.bookingTeam)?settings.bookingTeam:[]).find(s=>s.id===staffId&&s.enabled!==false);
+ if(staffId!=='default'&&!staff)throw crmError('This team member is unavailable. Choose another appointment.');
+ return {enabled:settings.bookingEnabled===true,staffId,staffName:staff?.name||'Team consultation',calendarId:String(staff?.calendarId||settings.bookingCalendarId||'').trim(),timeZone:validTimeZone(settings.bookingTimeZone),duration:Number(settings.bookingDuration??30),buffer:Number(settings.bookingBuffer??15),leadHours:Number(settings.bookingLeadHours??24),windowDays:Number(settings.bookingWindowDays??30),weekdays:staff?.weekdays||settings.bookingWeekdays||[1,2,3,4,5],dayStart:staff?.dayStart||settings.bookingDayStart||'09:30',dayEnd:staff?.dayEnd||settings.bookingDayEnd||'17:30',blockedDates:[...(settings.bookingBlockedDates||[]),...(staff?.blockedDates||[])],location:String(settings.bookingLocation||'The team will confirm meeting details.').slice(0,300)};
+}
 export function validateBookingSettings(settings){
  const c=bookingConfig(settings);
  if(settings.bookingEnabled!=null&&typeof settings.bookingEnabled!=='boolean')throw crmError('Choose a valid booking on/off setting.');
@@ -11,6 +16,13 @@ export function validateBookingSettings(settings){
  if(!Array.isArray(c.weekdays)||!c.weekdays.length||c.weekdays.some(v=>!Number.isInteger(v)||v<0||v>6))throw crmError('Select at least one valid working day.');
  if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(c.dayStart)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(c.dayEnd)||c.dayEnd<=c.dayStart)throw crmError('Choose valid working hours with the end after the start.');
  if(!Array.isArray(c.blockedDates)||c.blockedDates.length>100||c.blockedDates.some(d=>!validDate(d)))throw crmError('Use YYYY-MM-DD for blocked dates.');
+ if(!Array.isArray(settings.bookingTeam||[])||(settings.bookingTeam||[]).length>6)throw crmError('Configure up to six individual team calendars.');
+ const seen=new Set();for(const staff of settings.bookingTeam||[]){
+  if(!UUID.test(staff.id||'')||seen.has(staff.id)||typeof staff.name!=='string'||!staff.name.trim()||staff.name.length>100||!staff.calendarId||staff.calendarId.length>250||/[\s<>]/.test(staff.calendarId))throw crmError('Each team calendar needs a unique ID, display name and valid calendar ID.');
+  seen.add(staff.id);
+  validateBookingSettings({...settings,bookingTeam:[],bookingCalendarId:staff.calendarId,bookingWeekdays:staff.weekdays||c.weekdays,bookingDayStart:staff.dayStart||c.dayStart,bookingDayEnd:staff.dayEnd||c.dayEnd,bookingBlockedDates:staff.blockedDates||[]});
+ }
+ for(const key of ['bookingRemindersEnabled','bookingWaitlistEnabled'])if(settings[key]!=null&&typeof settings[key]!=='boolean')throw crmError('Choose valid appointment notification settings.');
  return c;
 }
 export function validDate(value){try{return /^\d{4}-\d{2}-\d{2}$/.test(value||'')&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;}catch{return false;}}
@@ -36,4 +48,4 @@ export function validateBookingPayload(payload){
  if(!Number.isFinite(Date.parse(payload.start)))throw crmError('Choose an available time.');
  return {name,email,phone,service,message:'Consultation booking request',createdAt:new Date().toISOString()};
 }
-export function safeBooking(row){return {id:row.id,start:row.start_at,end:row.end_at,status:row.status,timeZone:row.data?.timeZone||'Asia/Kolkata',service:row.data?.service||'',location:row.data?.location||'',reference:row.enquiry_id?'JMP-'+String(row.enquiry_id).padStart(6,'0'):''};}
+export function safeBooking(row){return {id:row.id,start:row.start_at,end:row.end_at,status:row.status,timeZone:row.data?.timeZone||'Asia/Kolkata',service:row.data?.service||'',location:row.data?.location||'',staffId:row.data?.staffId||'default',staffName:row.data?.staffName||'Team consultation',reference:row.enquiry_id?'JMP-'+String(row.enquiry_id).padStart(6,'0'):''};}

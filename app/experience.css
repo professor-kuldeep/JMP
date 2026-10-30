@@ -50,3 +50,6 @@
 .site-footer .footer-brand .formatted-text{font-size:13px;line-height:1.85}
 .analytics-choice p{font-size:14px;line-height:1.75;margin-bottom:16px}
 @media(max-width:560px){.public-main .hero-art-v2 .hero-art-caption{padding:16px 18px}.public-main .hero-art-v2 .hero-art-caption div>span{font-size:14px}.site-footer .footer-logo{max-width:260px}}
+
+/* Appointment selection and review. */
+.booking-date-strip{display:grid;grid-template-columns:repeat(7,minmax(54px,1fr));gap:8px;margin:4px 0 25px;overflow:auto}.booking-date-strip button{min-height:68px;padding:9px;border:1px solid #c9d5de;border-radius:7px;background:white;color:#173a51;font:inherit;font-weight:600;cursor:pointer}.booking-date-strip button small{display:block;font-size:10px;font-weight:400}.booking-date-strip button[aria-pressed=true]{background:#173a51;border-color:#173a51;color:white}.booking-date-strip button:disabled{opacity:.45;cursor:default}.booking-review{padding:22px 25px;background:#f1f5f7;border-radius:9px;border-left:3px solid var(--accent);margin:25px 0}.booking-review h3{font:600 15px var(--font-poppins),sans-serif;margin:0 0 12px}.booking-review p{font-size:13px;margin:5px 0}.booking-date-label select{min-height:46px;width:100%;padding:10px;border:1px solid #bccbd4;border-radius:5px;background:white;color:#203442;font:inherit}

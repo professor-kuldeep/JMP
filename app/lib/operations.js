@@ -6,6 +6,7 @@ import {recordOperation} from './monitoring';
 import {backupEnvironment,listBackups,startBackup,continueBackup,purgeOldBackups} from './backups';
 import {calendarEnvironment} from './calendar';
 import {reconcileBookingHolds} from './booking-service';
+import {runPracticeMaintenance} from './practice-maintenance';
 import {storageRequired} from './runtime-store';
 export async function operationStatus(){
  const db=supabaseAdmin(),environment={calendar:calendarEnvironment(),backups:backupEnvironment(),mail:Boolean(process.env.RESEND_API_KEY&&process.env.ENQUIRY_EMAIL_FROM),scheduler:Boolean(process.env.CRON_SECRET)};
@@ -28,7 +29,7 @@ export async function runMaintenance(){
  const db=supabaseAdmin();if(!db)throw storageRequired();const token=crypto.randomUUID(),claimed=await db.rpc('coretax_claim_maintenance',{p_token:token});if(claimed.error)throw storageRequired(claimed.error);if(!claimed.data)return {busy:true};
  const startedAt=new Date().toISOString(),result={startedAt,mail:null,cleanup:null,booking:null,backup:null,errors:[]};
  try{const settings=await getSettings();
-  for(const [name,run] of [['mail',()=>processEmailQueue(10)],['cleanup',()=>cleanupRetention(settings)],['booking',()=>calendarEnvironment().configured?reconcileBookingHolds(settings):{skipped:true}],['backup',async()=>{if(!backupEnvironment().configured)return {setupRequired:true};let backups=await listBackups(),pending=backups.find(b=>['pending','processing'].includes(b.state));if(!pending&&!backups.some(b=>b.state==='complete'&&Date.parse(b.created_at)>Date.now()-86400000)){pending=await startBackup();}const value=pending?await continueBackup(pending.id):{current:true};await purgeOldBackups();return value;}]]){try{result[name]=await run();}catch{result.errors.push(name);await recordOperation(name,'MAINTENANCE_FAILED');}}
+  for(const [name,run] of [['practice',()=>runPracticeMaintenance(settings)],['mail',()=>processEmailQueue(3)],['cleanup',()=>cleanupRetention(settings)],['booking',()=>calendarEnvironment().configured?reconcileBookingHolds(settings):{skipped:true}],['backup',async()=>{if(!backupEnvironment().configured)return {setupRequired:true};let backups=await listBackups(),pending=backups.find(b=>['pending','processing'].includes(b.state));if(!pending&&!backups.some(b=>b.state==='complete'&&Date.parse(b.created_at)>Date.now()-86400000)){pending=await startBackup();}const value=pending?await continueBackup(pending.id):{current:true};await purgeOldBackups();return value;}]]){try{result[name]=await run();}catch{result.errors.push(name);await recordOperation(name,'MAINTENANCE_FAILED');}}
   result.finishedAt=new Date().toISOString();await db.from('cms_integrations').upsert({id:'operations_last_run',data:result,updated_at:result.finishedAt});return result;
  }finally{await db.from('cms_integrations').delete().eq('id','operations_lease').eq('data->>token',token);}
 }

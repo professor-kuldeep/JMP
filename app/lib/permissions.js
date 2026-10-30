@@ -3,7 +3,8 @@ export const ROLE_LABELS = {
   admin: 'Administrator',
   editor: 'Editor',
   marketing: 'Marketing',
-  viewer: 'Enquiry Viewer'
+  viewer: 'Enquiry Viewer',
+  practice: 'Client Services'
 };
 
 const ROLE_PERMISSIONS = {
@@ -14,17 +15,19 @@ const ROLE_PERMISSIONS = {
     'media:read','media:write','media:delete',
     'enquiries:read','enquiries:write','enquiries:delete','enquiries:export',
     'menus:read','menus:write','forms:read','forms:write','appearance:read','appearance:write','settings:read','settings:write',
-    'backup:export','security:read','analytics:read','analytics:manage','operations:read','operations:manage','booking:read','booking:manage'
+    'backup:export','security:read','analytics:read','analytics:manage','operations:read','operations:manage','booking:read','booking:manage',
+    'practice:read','practice:write','practice:manage','pages:review','pages:approve'
   ],
   editor: [
-    'dashboard:read','pages:read','pages:write','pages:publish','pages:restore',
+    'dashboard:read','pages:read','pages:write','pages:publish','pages:restore','pages:review',
     'media:read','media:write','menus:read','forms:read','appearance:read','settings:read'
   ],
   marketing: [
-    'dashboard:read','pages:read','pages:write','pages:publish','pages:restore',
+    'dashboard:read','pages:read','pages:write','pages:publish','pages:restore','pages:review',
     'media:read','media:write','forms:read','forms:write','appearance:read','settings:read','analytics:read'
   ],
-  viewer: ['dashboard:read','enquiries:read','enquiries:write','enquiries:export']
+  viewer: ['dashboard:read','enquiries:read','enquiries:write','enquiries:export'],
+  practice: ['dashboard:read','enquiries:read','enquiries:write','practice:read','practice:write']
 };
 
 export function permissionsForRole(role = 'viewer') {

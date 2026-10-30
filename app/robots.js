@@ -3,5 +3,5 @@ import { siteOrigin } from './lib/seo.mjs';
 export const dynamic = 'force-dynamic';
 export default async function robots() {
   const origin = siteOrigin(await getSettings(), process.env);
-  return {rules:{userAgent:'*', allow:'/', disallow:['/admin','/api/','/reset-password','/booking/manage']}, sitemap:origin ? origin+'/sitemap.xml' : undefined};
+  return {rules:{userAgent:'*', allow:'/', disallow:['/admin','/api/','/reset-password','/client-portal','/waitlist','/booking/manage']}, sitemap:origin ? origin+'/sitemap.xml' : undefined};
 }
